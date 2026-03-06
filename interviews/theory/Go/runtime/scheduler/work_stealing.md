@@ -10,12 +10,18 @@ schedule():
 2. runqget()                  — runnext → runq (LRQ)
 
 findRunnable():
-3. runqget() + checkTimers()  — локальная (LRQ) + будит time.Sleep горутины
-4. globrunqget()              — глобальная (GRQ)
-5. netpoll(0)                 — "есть готовые?" → "нет" → идём дальше
-6. stealWork()                — 4 попытки у случайного P
-7. netpoll(delay)             — "есть готовые?" → "нет" → ждём пока придут
-8. stopm()                    — засыпает
+1. traceReader()          — горутина трассировки (если включена)
+2. gcController worker    — GC worker (если GC активен)
+3. globrunqget()          — каждый 61-й тик (fairness, GRQ)
+4. runqget()              — runnext → runq (LRQ)
+5. globrunqgetbatch()     — глобальная очередь (GRQ), берёт батч в LRQ
+6. netpoll(0)             — неблокирующий poll (оптимизация перед стилингом)
+7. stealWork()            — обход всех P в рандомном порядке:
+                              • runqsteal() — крадёт половину LRQ чужого P
+                              • checkTimers() — забирает таймеры чужого P
+8. gcMarkWorkerIdleMode   — idle GC worker (если есть незанятый P)
+9. netpoll(delay)         — блокирующий poll до следующего таймера
+10. stopm()               — засыпает
 ```
 ^ws-order
 
