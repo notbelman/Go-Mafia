@@ -5,35 +5,35 @@ cssclasses: clean-embeds
 > [!note]- Задачи (5|21)
 >
 > > [!abstract]- Algorithms (1)
-> > - [[interviews/questions/tasks/058-is-exp-of-two|Является ли число степенью двойки]]
+> > - [[058-is-exp-of-two|Является ли число степенью двойки]]
 >
 > > [!abstract]- Architecture (1)
-> > - [[interviews/questions/tasks/090-create-order-service|Создание заказа с аналитикой — как не терять заказы при таймауте сервиса]]
+> > - [[090-create-order-service|Создание заказа с аналитикой — как не терять заказы при таймауте сервиса]]
 >
 > > [!abstract]- Go (13)
-> > - [[interviews/questions/tasks/010-merge-channels|Merge N каналов в один]]
-> > - [[interviews/questions/tasks/011-valid-brackets|Валидация скобочной последовательности]]
+> > - [[010-merge-channels|Merge N каналов в один]]
+> > - [[011-valid-brackets|Валидация скобочной последовательности]]
 > > - [[interviews/questions/tasks/106-generate-slice|Генерация слайса N уникальных случайных чисел]]
-> > - [[interviews/questions/tasks/105-two-read-workers|Два последовательных чтения из worker() — сколько секунд выполняется]]
-> > - [[interviews/questions/tasks/052-string-immut|Иммутабельность строк — можно ли изменить байт строки]]
-> > - [[interviews/questions/tasks/012-merge-intervals|Объединить пересекающиеся интервалы встреч]]
-> > - [[interviews/questions/tasks/014-nil-interface-error|Ошибка и вывод - nil interface vs nil pointer]]
-> > - [[interviews/questions/tasks/053-append-slices|Поведение append при передаче подслайса в функцию]]
-> > - [[interviews/questions/tasks/015-http-requests|Последовательные HTTP запросы по списку URL]]
-> > - [[interviews/questions/tasks/006-is-monotonic|Проверить является ли слайс монотонным]]
-> > - [[interviews/questions/tasks/013-inmemory-cache|Реализовать in-memory cache]]
-> > - [[interviews/questions/tasks/005-uniq-randn|Сгенерировать слайс из n уникальных случайных чисел]]
-> > - [[interviews/questions/tasks/051-map-print|Что выведет итерация по мапе]]
+> > - [[105-two-read-workers|Два последовательных чтения из worker() — сколько секунд выполняется]]
+> > - [[052-string-immut|Иммутабельность строк — можно ли изменить байт строки]]
+> > - [[012-merge-intervals|Объединить пересекающиеся интервалы встреч]]
+> > - [[014-nil-interface-error|Ошибка и вывод - nil interface vs nil pointer]]
+> > - [[053-append-slices|Поведение append при передаче подслайса в функцию]]
+> > - [[015-http-requests|Последовательные HTTP запросы по списку URL]]
+> > - [[006-is-monotonic|Проверить является ли слайс монотонным]]
+> > - [[013-inmemory-cache|Реализовать in-memory cache]]
+> > - [[005-uniq-randn|Сгенерировать слайс из n уникальных случайных чисел]]
+> > - [[051-map-print|Что выведет итерация по мапе]]
 >
 > > [!abstract]- PostgreSQL (5)
-> > - [[interviews/questions/tasks/016-library-models|Модели библиотеки (автор, книга, читатель)]]
-> > - [[interviews/questions/tasks/050-oscars-awards|Подсчёт количества Оскаров у актрис]]
-> > - [[interviews/questions/tasks/007-purchases-before-ban|Покупки пользователей до бана]]
-> > - [[interviews/questions/tasks/008-users-sum-over-5000|Пользователи с суммой покупок больше 5000]]
-> > - [[interviews/questions/tasks/009-library-schema|Спроектировать модель библиотеки (автор, книга, читатель)]]
+> > - [[016-library-models|Модели библиотеки (автор, книга, читатель)]]
+> > - [[050-oscars-awards|Подсчёт количества Оскаров у актрис]]
+> > - [[007-purchases-before-ban|Покупки пользователей до бана]]
+> > - [[008-users-sum-over-5000|Пользователи с суммой покупок больше 5000]]
+> > - [[009-library-schema|Спроектировать модель библиотеки (автор, книга, читатель)]]
 >
 > > [!abstract]- System Design (1)
-> > - [[interviews/questions/tasks/017-analytics-order-loss|Потеря заказов из-за медленного сервиса аналитики]]
+> > - [[017-analytics-order-loss|Потеря заказов из-за медленного сервиса аналитики]]
 >
 
 > [!note]- Architecture (4|16)

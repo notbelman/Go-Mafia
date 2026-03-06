@@ -22,6 +22,6 @@ Go решает: если есть ожидающий писатель — **н�
 Горутина ждёт **>1ms** → мьютекс переходит в **starvation mode**: лок передаётся напрямую ожидающей горутине (FIFO), а не свежепришедшей. ^stv-go-mutex
 
 ## Связь
-- [[interviews/theory/Go/Concurrency Glossary/Deadlock]] — никто не продвигается
+- [[WORK-BASE/interviews/theory/Go/Concurrency Glossary/Deadlock]] — никто не продвигается
 - [[Livelock]] — никто, но CPU горит
 - [[Mutex]] — starvation mode в Go

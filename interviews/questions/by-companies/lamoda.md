@@ -5,14 +5,14 @@ cssclasses: clean-embeds
 > [!note]- Задачи (3|4)
 >
 > > [!abstract]- Algorithms (1)
-> > - [[interviews/questions/tasks/069-mul-without-i|Произведение всех элементов массива кроме текущего]]
+> > - [[069-mul-without-i|Произведение всех элементов массива кроме текущего]]
 >
 > > [!abstract]- Go (2)
-> > - [[interviews/questions/tasks/079-go-sql-balance-update|Анализ функции снятия денег с баланса — проблемы конкурентности]]
-> > - [[interviews/questions/tasks/070-link-gorutines|Параллельный обход URL с ограничением одновременных запросов]]
+> > - [[079-go-sql-balance-update|Анализ функции снятия денег с баланса — проблемы конкурентности]]
+> > - [[070-link-gorutines|Параллельный обход URL с ограничением одновременных запросов]]
 >
 > > [!abstract]- PostgreSQL (1)
-> > - [[interviews/questions/tasks/071-custimers-cards-joins|Запросы по покупателям и корзине — JOIN, топ-10, фильтрация]]
+> > - [[071-custimers-cards-joins|Запросы по покупателям и корзине — JOIN, топ-10, фильтрация]]
 >
 
 > [!note]- PostgreSQL (5|19)

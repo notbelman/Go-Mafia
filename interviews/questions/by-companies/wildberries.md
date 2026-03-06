@@ -5,18 +5,18 @@ cssclasses: clean-embeds
 > [!note]- Задачи (2|10)
 >
 > > [!abstract]- Go (5)
-> > - [[interviews/questions/tasks/004-agent-enabler|Agent Enabler - найти ошибки в конкурентном коде]]
-> > - [[interviews/questions/tasks/103-ch-deadlock|Deadlock с небуферизированным каналом и двумя deposit-горутинами]]
-> > - [[interviews/questions/tasks/102-modify-slice|Modify слайса в range с append при чётных индексах]]
-> > - [[interviews/questions/tasks/095-queure-aggregator|QueueAggregator — агрегация сессий по проектам с флашем по таймеру и по количеству]]
-> > - [[interviews/questions/tasks/102-concurency-map|Конкурентная запись в мапу из 100 горутин — data race]]
+> > - [[004-agent-enabler|Agent Enabler - найти ошибки в конкурентном коде]]
+> > - [[103-ch-deadlock|Deadlock с небуферизированным каналом и двумя deposit-горутинами]]
+> > - [[102-modify-slice|Modify слайса в range с append при чётных индексах]]
+> > - [[095-queure-aggregator|QueueAggregator — агрегация сессий по проектам с флашем по таймеру и по количеству]]
+> > - [[102-concurency-map|Конкурентная запись в мапу из 100 горутин — data race]]
 >
 > > [!abstract]- PostgreSQL (5)
-> > - [[interviews/questions/tasks/094-two-transactions|Анализ двух параллельных транзакций — аномалии на разных уровнях изоляции]]
-> > - [[interviews/questions/tasks/003-leaf-employees|Найти листовых сотрудников в дереве иерархии]]
-> > - [[interviews/questions/tasks/104-fast-index|Оптимизация запроса по таблице name/sex/year — порядок полей в индексе]]
-> > - [[interviews/questions/tasks/096-deparment-list|Список департаментов по количеству сотрудников с фильтрацией и оптимизация индексами]]
-> > - [[interviews/questions/tasks/046-library-with-authors|Структура библиотеки и выборка книг с несколькими авторами]]
+> > - [[094-two-transactions|Анализ двух параллельных транзакций — аномалии на разных уровнях изоляции]]
+> > - [[003-leaf-employees|Найти листовых сотрудников в дереве иерархии]]
+> > - [[104-fast-index|Оптимизация запроса по таблице name/sex/year — порядок полей в индексе]]
+> > - [[096-deparment-list|Список департаментов по количеству сотрудников с фильтрацией и оптимизация индексами]]
+> > - [[046-library-with-authors|Структура библиотеки и выборка книг с несколькими авторами]]
 >
 
 > [!note]- Architecture (2|5)

@@ -2,16 +2,16 @@
 
 Перечисли все поля `hchan` специфичные для буферизированного канала и объясни назначение каждого.
 ?
-![[Внутреннее устройство (hchan)#^hchan-fields]]
+![[WORK-BASE/interviews/theory/Go/Каналы/Сравнительные таблицы/Внутреннее устройство (hchan)#^hchan-fields]]
 
 За что отвечает поле `dataqsiz` в `hchan`? Может ли оно измениться после создания канала?
 ?
-![[Внутреннее устройство (hchan)#^hchan-dataqsiz-immutable]]
+![[WORK-BASE/interviews/theory/Go/Каналы/Сравнительные таблицы/Внутреннее устройство (hchan)#^hchan-dataqsiz-immutable]]
 
 Какой тип у поля `buf` в `hchan`? На что оно указывает?
 ?
-![[Внутреннее устройство (hchan)#^hchan-buf-ptr]]
+![[WORK-BASE/interviews/theory/Go/Каналы/Сравнительные таблицы/Внутреннее устройство (hchan)#^hchan-buf-ptr]]
 
 Почему `qcount` читается атомарно, а не под мьютексом в определённых случаях?
 ?
-![[Внутреннее устройство (hchan)#^hchan-qcount-atomic]]
+![[WORK-BASE/interviews/theory/Go/Каналы/Сравнительные таблицы/Внутреннее устройство (hchan)#^hchan-qcount-atomic]]

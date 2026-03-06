@@ -2,21 +2,21 @@
 
 После `readerCount.Add(rwmutexMaxReaders)` в `Unlock()` результат `r = 4`. Что это значит?
 ?
-![[Unlock()#^unlock-r-meaning]]
+![[WORK-BASE/interviews/theory/Go/sync/sync.Mutex/Unlock()#^unlock-r-meaning]]
 
 Как `Unlock()` детектирует вызов без парного `Lock()`?
 ?
-![[Unlock()#^unlock-fatal]]
+![[WORK-BASE/interviews/theory/Go/sync/sync.Mutex/Unlock()#^unlock-fatal]]
 
 Опиши порядок трёх действий в `Unlock()`. Почему именно такой порядок?
 ?
-![[Unlock()#^unlock-order]]
-![[Unlock()#^unlock-reader-starvation]]
+![[WORK-BASE/interviews/theory/Go/sync/sync.Mutex/Unlock()#^unlock-order]]
+![[WORK-BASE/interviews/theory/Go/sync/sync.Mutex/Unlock()#^unlock-reader-starvation]]
 
 Почему `Unlock()` будит читателей до вызова `w.Unlock()`? Что было бы если поменять порядок?
 ?
-![[Unlock()#^unlock-order]]
-![[Unlock()#^unlock-reader-starvation]]
+![[WORK-BASE/interviews/theory/Go/sync/sync.Mutex/Unlock()#^unlock-order]]
+![[WORK-BASE/interviews/theory/Go/sync/sync.Mutex/Unlock()#^unlock-reader-starvation]]
 
 Что выведет этот код (какой порядок вывода)?
 ```go
@@ -31,5 +31,5 @@ time.Sleep(50 * time.Millisecond)
 ```
 ?
 R1 и R2 (в любом порядке) напечатаются до W2. `Unlock()` сначала будит всех ждущих читателей (`Semrelease(readerSem)` × 2), затем вызывает `w.Unlock()` — только после этого W2 может захватить лок.
-![[Unlock()#^unlock-order]]
-![[Unlock()#^unlock-reader-starvation]]
+![[WORK-BASE/interviews/theory/Go/sync/sync.Mutex/Unlock()#^unlock-order]]
+![[WORK-BASE/interviews/theory/Go/sync/sync.Mutex/Unlock()#^unlock-reader-starvation]]

@@ -5,13 +5,13 @@ cssclasses: clean-embeds
 > [!note]- Задачи (2|5)
 >
 > > [!abstract]- Go (3)
-> > - [[interviews/questions/tasks/063-callbacks|Что выведет программа с select и двумя каналами]]
-> > - [[interviews/questions/tasks/061-init-slice-map|Что выведет программа — инициализация слайса и мапы]]
-> > - [[interviews/questions/tasks/062-range-go|Что выведется при запуске горутин в цикле range]]
+> > - [[063-callbacks|Что выведет программа с select и двумя каналами]]
+> > - [[061-init-slice-map|Что выведет программа — инициализация слайса и мапы]]
+> > - [[062-range-go|Что выведется при запуске горутин в цикле range]]
 >
 > > [!abstract]- PostgreSQL (2)
-> > - [[interviews/questions/tasks/065-indexes|Выбор одного индекса для нескольких запросов]]
-> > - [[interviews/questions/tasks/064-joins|Результат выполнения запросов с разными типами JOIN]]
+> > - [[065-indexes|Выбор одного индекса для нескольких запросов]]
+> > - [[064-joins|Результат выполнения запросов с разными типами JOIN]]
 >
 
 > [!note]- Architecture (1|3)

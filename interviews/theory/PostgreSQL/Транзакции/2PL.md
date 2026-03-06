@@ -67,4 +67,4 @@ Rollback: откатывает значения в storage на предыдущ
 - [[Транзакция и ACID]] — 2PL решает все аномалии на serializable
 - [[MVCC]] — альтернативный подход (оптимистичный)
 - [[Алгоритмы синхронизации списков]] — тонкая синхронизация = мини-2PL на узлах списка
-- [[interviews/theory/Go/Concurrency Glossary/Deadlock]] — граф ожидания, порядок захвата
+- [[WORK-BASE/interviews/theory/Go/Concurrency Glossary/Deadlock]] — граф ожидания, порядок захвата

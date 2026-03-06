@@ -71,6 +71,6 @@ _ = s[i]      // переменная → panic в runtime
 
 ## Связь
 - [[Rune и UTF-8]] — почему len ≠ количество символов
-- [[interviews/theory/Go/str/структура]] — header: ptr + len
+- [[WORK-BASE/interviews/theory/Go/str/структура]] — header: ptr + len
 - [[Сравнение строк]] — подстроки шарят ptr с разным len
 - [[Строки утечки памяти]] — подстрока держит всю память

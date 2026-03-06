@@ -47,6 +47,6 @@ Unlock():
 Это предотвращает reader starvation — после писателя читатели получают шанс войти раньше следующего писателя. ^unlock-reader-starvation
 
 ## Связь
-- [[Lock()]] — парная операция
+- [[WORK-BASE/interviews/theory/Go/sync/sync.RWMutex/Lock()]] — парная операция
 - [[Два режима]] — unlockSlow: Normal vs Starvation ветки
-- [[Структура]] — state и sema
+- [[WORK-BASE/interviews/theory/Go/str/структура]] — state и sema

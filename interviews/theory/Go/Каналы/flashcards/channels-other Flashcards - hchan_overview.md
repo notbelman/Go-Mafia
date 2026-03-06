@@ -2,9 +2,9 @@
 
 Где аллоцируется структура `hchan`? Что такое переменная канала в коде?
 ?
-![[Что это#^hchan-heap]]
-![[Что это#^hchan-pointer]]
+![[WORK-BASE/interviews/theory/Docker/Что это#^hchan-heap]]
+![[WORK-BASE/interviews/theory/Docker/Что это#^hchan-pointer]]
 
 Назови все поля структуры `hchan` с типами.
 ?
-![[Что это#^hchan-struct]]
+![[WORK-BASE/interviews/theory/Docker/Что это#^hchan-struct]]

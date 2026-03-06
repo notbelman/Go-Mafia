@@ -5,12 +5,12 @@ cssclasses: clean-embeds
 > [!note]- Задачи (2|4)
 >
 > > [!abstract]- Algorithms (2)
-> > - [[interviews/questions/tasks/068-sum-of-two|Два числа в массиве, дающие заданную сумму]]
-> > - [[interviews/questions/tasks/078-compress-string|Сжатие строки по алгоритму Run-Length Encoding]]
+> > - [[068-sum-of-two|Два числа в массиве, дающие заданную сумму]]
+> > - [[078-compress-string|Сжатие строки по алгоритму Run-Length Encoding]]
 >
 > > [!abstract]- Go (2)
-> > - [[interviews/questions/tasks/038-vk-unique-numbers|Проверить массив на уникальность элементов]]
-> > - [[interviews/questions/tasks/039-vk-cache-ttl|Реализовать кэш с TTL для User]]
+> > - [[038-vk-unique-numbers|Проверить массив на уникальность элементов]]
+> > - [[039-vk-cache-ttl|Реализовать кэш с TTL для User]]
 >
 
 > [!note]- Go (19|65)

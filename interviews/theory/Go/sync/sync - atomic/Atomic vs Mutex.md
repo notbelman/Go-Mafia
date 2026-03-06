@@ -32,5 +32,5 @@ Atomic = "эта конкретная операция неделима". ^atomi
 
 ## Связь
 - [[sync - atomic]] — API atomic
-- [[Структура]] — Mutex под капотом тоже использует atomic
+- [[WORK-BASE/interviews/theory/Go/str/структура]] — Mutex под капотом тоже использует atomic
 - [[Почему НЕ atomic везде]] — когда atomic не подходит

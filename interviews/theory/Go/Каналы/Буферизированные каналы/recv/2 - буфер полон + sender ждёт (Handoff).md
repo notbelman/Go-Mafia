@@ -38,5 +38,5 @@ G2: x := <-ch
 `goready(G1)` пробуждает спящего sender и помещает его goroutine в runqueue. ^recv2-goready
 
 ### Связь
-- [[Внутреннее устройство (hchan)]]
+- [[WORK-BASE/interviews/theory/Go/Каналы/Сравнительные таблицы/Внутреннее устройство (hchan)]]
 - [[4 - буфер пуст, никто не ждёт]]

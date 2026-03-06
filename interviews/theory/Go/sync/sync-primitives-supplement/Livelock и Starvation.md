@@ -67,6 +67,6 @@ go politeWorker(mu)   // Lock → sleep(1ns) → Unlock (×3) → repeat
 ^comparison-table
 
 ## Связь
-- [[interviews/theory/Go/sync/sync-primitives-supplement/Deadlock]] — взаимная блокировка
+- [[WORK-BASE/interviews/theory/Go/sync/sync-primitives-supplement/Deadlock]] — взаимная блокировка
 - [[Два режима (с Go 1.9)]] — starvation mode мьютекса решает голодание горутин в очереди
 - [[sync.Mutex.TryLock (Go 1.18+)]] — TryLock в цикле может приводить к livelock

@@ -53,7 +53,7 @@ readerWait.Add(3) → -3 + 3 = 0 → не спим!
 Первое условие (`r != 0`) — оптимизация: если читателей не было вообще, не трогаем `readerWait`. Второе (`readerWait.Add(r) != 0`) — защита от race когда читатели успели уйти за время между двумя атомарными операциями. ^lock-two-conditions-detail
 
 ## Связь
-- [[Структура]] — state и sema
-- [[Unlock()]] — парная операция
+- [[WORK-BASE/interviews/theory/Go/str/структура]] — state и sema
+- [[WORK-BASE/interviews/theory/Go/sync/sync.RWMutex/Unlock()]] — парная операция
 - [[Два режима]] — Normal vs Starvation влияют на алгоритм
 - [[state]] — CAS над полем state

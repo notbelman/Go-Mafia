@@ -24,4 +24,4 @@
 
 ## Связь
 - [[Transaction Outbox]] — зеркальный паттерн на стороне отправителя
-- [[interviews/theory/sd/паттерны/fault-tolerance-cards/Dead Letter Queue (DLQ)|Dead Letter Queue (DLQ)]] — DLQ для сообщений, которые не удалось обработать; inbox для длительных операций
+- [[WORK-BASE/interviews/theory/sd/паттерны/fault-tolerance-cards/Dead Letter Queue (DLQ)|Dead Letter Queue (DLQ)]] — DLQ для сообщений, которые не удалось обработать; inbox для длительных операций

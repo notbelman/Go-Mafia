@@ -77,4 +77,4 @@ WaitGroup — обычная структура. Если указатель н�
 ## Связь
 - [[sync.WaitGroup]] — внутреннее устройство
 - [[sync.Wg пример]] — пошаговый пример работы
-- [[interviews/theory/Go/sync/sync-primitives-supplement/Deadlock]] — копирование WaitGroup → deadlock
+- [[WORK-BASE/interviews/theory/Go/sync/sync-primitives-supplement/Deadlock]] — копирование WaitGroup → deadlock

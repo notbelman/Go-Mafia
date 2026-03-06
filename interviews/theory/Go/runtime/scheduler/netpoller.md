@@ -46,6 +46,6 @@ Netpoller — подсистема для асинхронного сетево�
 ^np-efficiency
 
 ## Связь
-- [[Handoff]] — что происходит с несетевыми syscalls
+- [[handoff]] — что происходит с несетевыми syscalls
 - [[sysmon]] — кто периодически проверяет epoll
 - [[Work stealing]] — netpoll как последний шаг поиска работы

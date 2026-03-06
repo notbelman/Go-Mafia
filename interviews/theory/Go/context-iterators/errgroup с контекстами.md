@@ -47,4 +47,4 @@ Wait() ждёт ВСЕ горутины (не только до первой о�
 ## Связь
 - [[context WithCancel]] — errgroup использует WithCancel внутри
 - [[Оборачивание функций без контекста]] — паттерн для одной горутины
-- [[interviews/theory/Go/Graceful Shutdown]] — errgroup можно использовать для координации shutdown
+- [[WORK-BASE/interviews/theory/Go/Graceful Shutdown]] — errgroup можно использовать для координации shutdown

@@ -5,10 +5,10 @@ cssclasses: clean-embeds
 > [!note]- Задачи (2|2)
 >
 > > [!abstract]- Algorithms (1)
-> > - [[interviews/questions/tasks/077-max-one-array|Максимальный подынтервал единиц при удалении одного элемента]]
+> > - [[077-max-one-array|Максимальный подынтервал единиц при удалении одного элемента]]
 >
 > > [!abstract]- Go (1)
-> > - [[interviews/questions/tasks/093-client-side|Client-side балансировщик нагрузки между экземплярами микросервиса]]
+> > - [[093-client-side|Client-side балансировщик нагрузки между экземплярами микросервиса]]
 >
 
 > [!note]- Брокеры (1|1)

@@ -19,4 +19,4 @@
 ## Связь
 - [[Retry + Backoff]] — circuit breaker предотвращает бесконечные ретраи
 - [[Graceful Degradation]] — когда breaker открыт, система деградирует (fallback)
-- [[interviews/theory/Брокеры сообщений/Apache Kafka/Общее/Dead Letter Queue (DLQ)|Dead Letter Queue (DLQ)]] — запросы, отбитые breaker-ом, можно складывать в DLQ
+- [[WORK-BASE/interviews/theory/Брокеры сообщений/Apache Kafka/Общее/Dead Letter Queue (DLQ)|Dead Letter Queue (DLQ)]] — запросы, отбитые breaker-ом, можно складывать в DLQ

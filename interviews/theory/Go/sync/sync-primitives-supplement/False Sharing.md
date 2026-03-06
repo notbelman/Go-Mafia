@@ -75,4 +75,4 @@ Padding 128 байт даёт ещё больший прирост — кэш-л
 ## Связь
 - [[Atomic vs Mutex]] — атомик ~2x быстрее мьютекса, но шардирование + padding ещё быстрее
 - [[sync - atomic]] — атомарные операции
-- [[sync.Pool]] — в Pool тоже per-P + padding (poolLocal)
+- [[WORK-BASE/interviews/theory/Go/sync/sync.Pool]] — в Pool тоже per-P + padding (poolLocal)

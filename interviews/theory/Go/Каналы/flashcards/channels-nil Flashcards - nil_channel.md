@@ -22,19 +22,19 @@
 
 Что происходит с case nil-канала в `select`?
 ?
-![[Поведение в select#^nil-select-main-feature]]
+![[WORK-BASE/interviews/theory/Go/Каналы/nil-каналы/Поведение в select#^nil-select-main-feature]]
 
 `select` содержит два case: один с nil-каналом, другой с готовым не-nil каналом. Что произойдёт?
 ?
-![[Поведение в select#^nil-select-table]]
+![[WORK-BASE/interviews/theory/Go/Каналы/nil-каналы/Поведение в select#^nil-select-table]]
 
 Все каналы в `select` равны `nil`, `default` нет. Что произойдёт?
 ?
-![[Поведение в select#^nil-select-all-nil-deadlock]]
+![[WORK-BASE/interviews/theory/Go/Каналы/nil-каналы/Поведение в select#^nil-select-all-nil-deadlock]]
 
 Все каналы в `select` равны `nil`, есть `default`. Что выполнится?
 ?
-![[Поведение в select#^nil-select-table]]
+![[WORK-BASE/interviews/theory/Go/Каналы/nil-каналы/Поведение в select#^nil-select-table]]
 
 В чём суть паттерна "disable case"? Когда и зачем применяется?
 ?
@@ -76,7 +76,7 @@ case v := <-ch2:
 ```
 ?
 `ch2: 99` — case с `ch1` (nil-канал) игнорируется, выбирается единственный готовый не-nil case.
-![[Поведение в select#^nil-select-main-feature]]
+![[WORK-BASE/interviews/theory/Go/Каналы/nil-каналы/Поведение в select#^nil-select-main-feature]]
 
 Что выведет этот код?
 ```go

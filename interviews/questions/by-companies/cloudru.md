@@ -5,7 +5,7 @@ cssclasses: clean-embeds
 > [!note]- Задачи (1|1)
 >
 > > [!abstract]- Go (1)
-> > - [[interviews/questions/tasks/097-graceful-shutdown|Очередь задач с N воркерами и graceful shutdown]]
+> > - [[097-graceful-shutdown|Очередь задач с N воркерами и graceful shutdown]]
 >
 
 > [!note]- Architecture (4|13)

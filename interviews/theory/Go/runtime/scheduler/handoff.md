@@ -49,4 +49,4 @@ sysmon проверяет: P в состоянии syscall > 10ms → handoff. ^
 ## Связь
 - [[P (Processor)]] — зачем P отдельная сущность
 - [[M (Machine)]] — thread pool, переиспользование потоков
-- [[Netpoller]] — альтернатива hand-off для сетевых syscalls
+- [[netpoller]] — альтернатива hand-off для сетевых syscalls

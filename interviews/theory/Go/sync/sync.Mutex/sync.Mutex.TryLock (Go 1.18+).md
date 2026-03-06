@@ -42,6 +42,6 @@ func (m *Mutex) TryLock() bool {
 ## Добавлено в Go 1.18 ^trylock-version
 
 ## Связь
-- [[Lock()]] — обычный захват vs TryLock
+- [[WORK-BASE/interviews/theory/Go/sync/sync.Mutex/Lock()]] — обычный захват vs TryLock
 - [[Два режима]] — TryLock возвращает false если Starving
 - [[Livelock и Starvation]] — TryLock в цикле = livelock

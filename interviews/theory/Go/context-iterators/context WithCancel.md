@@ -78,4 +78,4 @@ fmt.Println(context.Cause(ctx)) // "user requested stop"
 ## Связь
 - [[Context]] — дерево контекстов, отмена по цепочке
 - [[context WithTimeout]] — автоотмена по времени (тоже использует cancel внутри)
-- [[interviews/theory/Go/Graceful Shutdown]] — signal.NotifyContext для завершения приложения
+- [[WORK-BASE/interviews/theory/Go/Graceful Shutdown]] — signal.NotifyContext для завершения приложения

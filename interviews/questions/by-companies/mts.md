@@ -5,17 +5,17 @@ cssclasses: clean-embeds
 > [!note]- Задачи (3|7)
 >
 > > [!abstract]- Go (5)
-> > - [[interviews/questions/tasks/031-mts-booking-review|Booking - ревью кода бронирования]]
-> > - [[interviews/questions/tasks/028-mts-do-sender|Do Sender - ревью кода семплирования трейсов]]
-> > - [[interviews/questions/tasks/098-proxy-store-get|ProxyStore — оптимизация метода Get с проблемой горячего ключа]]
-> > - [[interviews/questions/tasks/067-slice-func|Поведение слайса при передаче по значению и по указателю]]
-> > - [[interviews/questions/tasks/029-mts-valid-brackets|Порядок скобок - валидация скобочной последовательности]]
+> > - [[031-mts-booking-review|Booking - ревью кода бронирования]]
+> > - [[028-mts-do-sender|Do Sender - ревью кода семплирования трейсов]]
+> > - [[098-proxy-store-get|ProxyStore — оптимизация метода Get с проблемой горячего ключа]]
+> > - [[067-slice-func|Поведение слайса при передаче по значению и по указателю]]
+> > - [[029-mts-valid-brackets|Порядок скобок - валидация скобочной последовательности]]
 >
 > > [!abstract]- PostgreSQL (1)
-> > - [[interviews/questions/tasks/066-comp-out-deps|Запросы по сотрудникам и департаментам — JOIN, UNION, фильтрация]]
+> > - [[066-comp-out-deps|Запросы по сотрудникам и департаментам — JOIN, UNION, фильтрация]]
 >
 > > [!abstract]- System Design (1)
-> > - [[interviews/questions/tasks/030-mts-crud-slow|CRUD сервис стал медленнее работать]]
+> > - [[030-mts-crud-slow|CRUD сервис стал медленнее работать]]
 >
 
 > [!note]- Architecture (1|3)

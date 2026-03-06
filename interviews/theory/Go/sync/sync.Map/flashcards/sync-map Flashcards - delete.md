@@ -2,19 +2,19 @@
 
 Опиши алгоритм Delete() по шагам.
 ?
-![[Delete#^delete-algorithm]]
+![[WORK-BASE/interviews/theory/Go/sync/sync.Map/Delete#^delete-algorithm]]
 
 Delete НЕ удаляет запись из map. Что именно происходит?
 ?
-![[Delete#^delete-soft]]
+![[WORK-BASE/interviews/theory/Go/sync/sync.Map/Delete#^delete-soft]]
 
 Когда происходит физическое удаление записи из map?
 ?
-![[Delete#^delete-physical]]
+![[WORK-BASE/interviews/theory/Go/sync/sync.Map/Delete#^delete-physical]]
 
 Ключ есть в read. Вызываем Delete. Берётся ли mutex?
 ?
-![[Delete#^delete-algorithm]]
+![[WORK-BASE/interviews/theory/Go/sync/sync.Map/Delete#^delete-algorithm]]
 
 Что выведет этот код?
 ```go
@@ -26,4 +26,4 @@ fmt.Println(val, ok)
 ```
 ?
 `<nil> false` — после Delete entry.p = nil, Load проверяет nil и возвращает nil, false. Запись физически остаётся в map, но считается удалённой.
-![[Delete#^delete-soft]]
+![[WORK-BASE/interviews/theory/Go/sync/sync.Map/Delete#^delete-soft]]

@@ -61,6 +61,6 @@ state &^ 1          // clear locked
 ^state-write
 
 ## Связь
-- [[Структура]] — поля mutex
-- [[Lock()]] — как state меняется при захвате
+- [[WORK-BASE/interviews/theory/Go/sync/sync.Mutex/Структура]] — поля mutex
+- [[WORK-BASE/interviews/theory/Go/sync/sync.Mutex/Lock()]] — как state меняется при захвате
 - [[Два режима]] — Normal vs Starvation

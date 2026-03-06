@@ -30,6 +30,6 @@ Unlock():
 ^sema-flow
 
 ## Связь
-- [[Структура]] — поля mutex
-- [[Lock()]] — runtime_SemacquireMutex в slow path
-- [[Unlock()]] — runtime_Semrelease
+- [[WORK-BASE/interviews/theory/Go/sync/sync.Mutex/Структура]] — поля mutex
+- [[WORK-BASE/interviews/theory/Go/sync/sync.Mutex/Lock()]] — runtime_SemacquireMutex в slow path
+- [[WORK-BASE/interviews/theory/Go/sync/sync.Mutex/Unlock()]] — runtime_Semrelease

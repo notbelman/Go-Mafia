@@ -5,15 +5,15 @@ cssclasses: clean-embeds
 > [!note]- Задачи (2|7)
 >
 > > [!abstract]- Go (6)
-> > - [[interviews/questions/tasks/080-merge-n-channels|Fan-in — слияние N каналов в один (пакет chan_utils)]]
-> > - [[interviews/questions/tasks/084-main-panic|Recover в main не ловит панику из другой горутины]]
-> > - [[interviews/questions/tasks/085-select-channels|Select с записью и чтением из одного буферизированного канала]]
-> > - [[interviews/questions/tasks/086-slices-append|Анализ append к подслайсу — влияние на оригинал]]
-> > - [[interviews/questions/tasks/083-deref-analizes|Анализ defer в цикле range — порядок вывода]]
-> > - [[interviews/questions/tasks/081-custom-once|Кастомная реализация sync.Once с гарантиями потокобезопасности]]
+> > - [[080-merge-n-channels|Fan-in — слияние N каналов в один (пакет chan_utils)]]
+> > - [[084-main-panic|Recover в main не ловит панику из другой горутины]]
+> > - [[085-select-channels|Select с записью и чтением из одного буферизированного канала]]
+> > - [[086-slices-append|Анализ append к подслайсу — влияние на оригинал]]
+> > - [[083-deref-analizes|Анализ defer в цикле range — порядок вывода]]
+> > - [[081-custom-once|Кастомная реализация sync.Once с гарантиями потокобезопасности]]
 >
 > > [!abstract]- PostgreSQL (1)
-> > - [[interviews/questions/tasks/082-orders|Магазины с количеством заказов за июнь больше 100]]
+> > - [[082-orders|Магазины с количеством заказов за июнь больше 100]]
 >
 
 > [!note]- Go (8|20)

@@ -2,27 +2,27 @@
 
 Что такое signal.NotifyContext? Чем он отличается от обычного WithCancel?
 ?
-![[Graceful Shutdown#^gs-notify-context]]
+![[WORK-BASE/interviews/theory/Go/Graceful Shutdown#^gs-notify-context]]
 
 Разработчик написал: «У меня есть graceful shutdown — я слушаю signal.NotifyContext и жду <-ctx.Done()». Что не так?
 ?
-![[Graceful Shutdown#^gs-not-graceful]]
+![[WORK-BASE/interviews/theory/Go/Graceful Shutdown#^gs-not-graceful]]
 
 Дай точное определение: что такое graceful shutdown? Из каких шагов состоит?
 ?
-![[Graceful Shutdown#^gs-definition]]
+![[WORK-BASE/interviews/theory/Go/Graceful Shutdown#^gs-definition]]
 
 Чем srv.Shutdown(ctx) отличается от srv.Close()?
 ?
-![[Graceful Shutdown#^gs-shutdown-vs-close]]
+![[WORK-BASE/interviews/theory/Go/Graceful Shutdown#^gs-shutdown-vs-close]]
 
 Почему при graceful shutdown используют отдельный context.WithTimeout для srv.Shutdown, а не тот же ctx от signal.NotifyContext?
 ?
-![[Graceful Shutdown#^gs-shutdown-timeout]]
+![[WORK-BASE/interviews/theory/Go/Graceful Shutdown#^gs-shutdown-timeout]]
 
 Опиши полный паттерн graceful shutdown HTTP-сервера в Go по шагам.
 ?
-![[Graceful Shutdown#^gs-pattern]]
+![[WORK-BASE/interviews/theory/Go/Graceful Shutdown#^gs-pattern]]
 
 Что выведет этот код при получении SIGINT?
 ```go
@@ -34,4 +34,4 @@ fmt.Println("got signal")
 ```
 ?
 `got signal` — ctx отменится при SIGINT, <-ctx.Done() разблокируется. Но это НЕ graceful shutdown: активные HTTP-коннекшены не дождутся завершения, ресурсы не освобождены явно.
-![[Graceful Shutdown#^gs-not-graceful]]
+![[WORK-BASE/interviews/theory/Go/Graceful Shutdown#^gs-not-graceful]]

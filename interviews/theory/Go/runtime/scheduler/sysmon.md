@@ -29,6 +29,6 @@ SCHED 1000ms: gomaxprocs=4 idleprocs=2 threads=5
 ^sysmon-debug-output
 
 ## Связь
-- [[Preemption]] — как sysmon вытесняет горутины
-- [[Handoff]] — как sysmon отвязывает P от заблокированного M
-- [[Netpoller]] — sysmon проверяет epoll
+- [[preemption]] — как sysmon вытесняет горутины
+- [[handoff]] — как sysmon отвязывает P от заблокированного M
+- [[netpoller]] — sysmon проверяет epoll

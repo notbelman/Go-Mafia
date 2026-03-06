@@ -5,8 +5,8 @@ cssclasses: clean-embeds
 > [!note]- Задачи (2|3)
 >
 > > [!abstract]- Algorithms (2)
-> > - [[interviews/questions/tasks/108-binary-search|Поиск элемента в повёрнутом отсортированном массиве]]
-> > - [[interviews/questions/tasks/107-get-sum-slice|Произведение элементов слайса, исключая текущий элемент]]
+> > - [[108-binary-search|Поиск элемента в повёрнутом отсортированном массиве]]
+> > - [[107-get-sum-slice|Произведение элементов слайса, исключая текущий элемент]]
 >
 > > [!abstract]- Go (1)
 > > - [[interviews/questions/tasks/106-generate-slice|Генерация слайса N уникальных случайных чисел]]

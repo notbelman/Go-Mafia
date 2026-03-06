@@ -28,4 +28,4 @@ mu.Unlock()
 ## Связь
 - [[Mutex]] — защищает КС
 - [[Contention]] — длинная КС = высокий contention
-- [[interviews/theory/Go/Concurrency Glossary/Deadlock]] — мелкогранулярные локи → риск deadlock
+- [[WORK-BASE/interviews/theory/Go/Concurrency Glossary/Deadlock]] — мелкогранулярные локи → риск deadlock

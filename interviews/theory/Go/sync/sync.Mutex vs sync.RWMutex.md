@@ -143,5 +143,5 @@ func Increment() {
 
 ## Связь
 - [[sync.RWMutex]] — структура RWMutex
-- [[Структура]] — структура Mutex
+- [[WORK-BASE/interviews/theory/Go/sync/sync.Map/Структура]] — структура Mutex
 - [[False Sharing]] — cache invalidation при RLock()

@@ -66,6 +66,6 @@ mu.Unlock()  // panic: sync: unlock of unlocked mutex
 ^deadlock-unlock-panic
 
 ## Связь
-- [[Структура]] — мьютекс не хранит goroutine ID
+- [[WORK-BASE/interviews/theory/Go/str/структура]] — мьютекс не хранит goroutine ID
 - [[Livelock и Starvation]] — другие проблемы конкурентности
 - [[Два режима (с Go 1.9)]] — starvation mode как защита от голодания

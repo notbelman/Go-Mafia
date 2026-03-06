@@ -83,15 +83,15 @@ fmt.Println(c)
 Как append записывает элементы, если в underlying array есть место?
 ?
 Записывает в позицию `len` underlying array и увеличивает `len`. Реаллокации не происходит.
-![[Append#^append-mechanic]]
+![[append#^append-mechanic]]
 
 Что именно проверяет append перед записью?
 ?
 `len + количество новых элементов > cap`. Если да — реаллокация, если нет — запись в существующий массив.
-![[Append#^append-mechanic]]
+![[append#^append-mechanic]]
 
 Почему `make([]int, 0, 3)` + `append(s, 1)` перезаписывает нули в underlying array?
 ?
 Нули — это zero values инициализации, а не данные слайса. `len=0` означает «0 используемых элементов». `append` пишет в позицию `len` (arr[0]) и увеличивает `len` до 1.
-![[Append#^append-mechanic]]
+![[append#^append-mechanic]]
 ![[Создание slice#^make-zero-values]]

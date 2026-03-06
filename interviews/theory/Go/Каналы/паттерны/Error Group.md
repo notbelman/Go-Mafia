@@ -95,5 +95,5 @@ func (g *Group) Wait() error {
 
 ## Связь
 - [[Done channel]] — done-канал как сигнал об ошибке
-- [[interviews/theory/Go/Graceful Shutdown]] — error group для graceful завершения группы задач
+- [[WORK-BASE/interviews/theory/Go/Graceful Shutdown]] — error group для graceful завершения группы задач
 - [[Single Flight]] — тоже координация горутин с общим результатом

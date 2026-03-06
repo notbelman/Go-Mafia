@@ -36,5 +36,5 @@ time.Sleep(time.Duration(rand.Intn(100)) * time.Millisecond)
 Потоки **десинхронизируются** → один захватит ресурс первым. Аналог: Ethernet CSMA/CD при коллизии. ^ll-desync
 
 ## Связь
-- [[interviews/theory/Go/Concurrency Glossary/Deadlock]] — потоки спят, а не крутятся
+- [[WORK-BASE/interviews/theory/Go/Concurrency Glossary/Deadlock]] — потоки спят, а не крутятся
 - [[Starvation]] — система работает, но не для всех

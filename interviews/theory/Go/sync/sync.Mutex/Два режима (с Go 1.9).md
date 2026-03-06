@@ -43,7 +43,7 @@
 ^mode-comparison
 
 ## Связь
-- [[Lock()]] — spinning в Normal, handoff в Starvation
-- [[Unlock()]] — разные ветки для режимов
-- [[пример]] — пошаговый сценарий переключения
-- [[interviews/theory/Go/Concurrency Glossary/Deadlock]] — к чему приводят ошибки с мьютексами
+- [[WORK-BASE/interviews/theory/Go/sync/sync.Mutex/Lock()]] — spinning в Normal, handoff в Starvation
+- [[WORK-BASE/interviews/theory/Go/sync/sync.Mutex/Unlock()]] — разные ветки для режимов
+- [[WORK-BASE/interviews/theory/Go/sync/sync.Mutex/пример]] — пошаговый сценарий переключения
+- [[WORK-BASE/interviews/theory/Go/Concurrency Glossary/Deadlock]] — к чему приводят ошибки с мьютексами

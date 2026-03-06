@@ -5,7 +5,7 @@ cssclasses: clean-embeds
 > [!note]- Задачи (1|1)
 >
 > > [!abstract]- PostgreSQL (1)
-> > - [[interviews/questions/tasks/109-which-index-to-use|Какие индексы добавить для трёх типов запросов по двум столбцам]]
+> > - [[109-which-index-to-use|Какие индексы добавить для трёх типов запросов по двум столбцам]]
 >
 
 > [!note]- Databases (1|1)

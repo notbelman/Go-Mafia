@@ -5,9 +5,9 @@ cssclasses: clean-embeds
 > [!note]- Задачи (1|3)
 >
 > > [!abstract]- Go (3)
-> > - [[interviews/questions/tasks/100-check-err-error|checkErr и nil — четыре варианта присваивания error-интерфейсу]]
-> > - [[interviews/questions/tasks/101-wg-select|WaitGroup + select без default — найди deadlock и исправь]]
-> > - [[interviews/questions/tasks/099-two-append|Два append от одного слайса — y и z после append(x, 3) и append(x, 4)]]
+> > - [[100-check-err-error|checkErr и nil — четыре варианта присваивания error-интерфейсу]]
+> > - [[101-wg-select|WaitGroup + select без default — найди deadlock и исправь]]
+> > - [[099-two-append|Два append от одного слайса — y и z после append(x, 3) и append(x, 4)]]
 >
 
 > [!note]- Go (2|6)
