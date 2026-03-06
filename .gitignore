@@ -1,0 +1,11 @@
+# Игнорируем всё
+*
+
+# Кроме interviews
+!interviews/
+!interviews/**
+
+# И .gitignore
+!.gitignore
+
+**/.DS_Store
