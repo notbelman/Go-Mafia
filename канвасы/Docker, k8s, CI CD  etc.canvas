@@ -1,0 +1,19 @@
+{
+	"nodes":[
+		{"id":"ec3147eed4ee626e","type":"group","x":-1050,"y":-802,"width":2100,"height":958,"color":"#5a2828","label":"DOCKER"},
+		{"id":"0449e2846313dc8d","type":"group","x":-890,"y":352,"width":1240,"height":450,"color":"#5a2828","label":"K8S"},
+		{"id":"311436d65ae46378","type":"file","file":"theory/Docker, k8s, CI CD etc/Docker/Docker Image.md","x":-236,"y":-298,"width":400,"height":400},
+		{"id":"611789f04a6d7f11","type":"file","file":"theory/Docker, k8s, CI CD etc/Docker/Docker Container.md","x":164,"y":-298,"width":400,"height":400},
+		{"id":"dbbe990159048c9c","type":"file","file":"theory/Docker, k8s, CI CD etc/Docker/Dockerfile.md","x":-636,"y":-298,"width":400,"height":400},
+		{"id":"d916f98f108600e2","type":"file","file":"theory/Docker, k8s, CI CD etc/Docker/Docker Compose.md","x":564,"y":-298,"width":400,"height":400},
+		{"id":"1d374a87d55e419b","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Что такое Pod.md","x":-70,"y":382,"width":400,"height":400},
+		{"id":"9ecece7945da3b86","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Что такое Kubernetes (k8s).md","x":-870,"y":382,"width":400,"height":400},
+		{"id":"cffec778fa758ff3","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Зачем нужен Kubernetes.md","x":-470,"y":382,"width":400,"height":400},
+		{"id":"1a6ddd59ffe219df","type":"file","file":"theory/Docker, k8s, CI CD etc/Docker/Слои Docker.md","x":-530,"y":-742,"width":460,"height":400},
+		{"id":"096bc15ea901ecdb","type":"file","file":"theory/Docker, k8s, CI CD etc/Docker/Docker Volumes.md","x":-36,"y":-742,"width":500,"height":400},
+		{"id":"32511597375fffba","type":"file","file":"theory/Docker, k8s, CI CD etc/Docker/Что это.md","x":-1036,"y":-298,"width":400,"height":400},
+		{"id":"ef7ab8f669cf1268","type":"file","file":"theory/Docker, k8s, CI CD etc/Docker/Multi-stage build для Go.md","x":-1036,"y":-742,"width":466,"height":400},
+		{"id":"6dba432c9c903fb7","type":"file","file":"theory/Docker, k8s, CI CD etc/Docker/Docker на Mac-Windows. Почему VM не вымерли.md","x":510,"y":-742,"width":500,"height":400}
+	],
+	"edges":[]
+}

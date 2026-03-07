@@ -1,0 +1,16 @@
+{
+	"nodes":[
+		{"id":"0d9f9f5c29b03492","x":13840,"y":-1472,"width":400,"height":400,"type":"file","file":"канвасы/PostgreSQL.canvas"},
+		{"id":"a0d06aed1ce64981","x":14280,"y":-1472,"width":400,"height":400,"type":"file","file":"канвасы/GO.canvas"},
+		{"id":"d5ba9f122f3cd683","x":14280,"y":-1000,"width":400,"height":400,"type":"file","file":"канвасы/Систем-дизайн.canvas"},
+		{"id":"773378239bcad5ef","x":13840,"y":-1000,"width":400,"height":400,"type":"file","file":"канвасы/Брокеры.canvas"},
+		{"id":"c39518ab0990443f","x":13400,"y":-1472,"width":400,"height":400,"type":"file","file":"канвасы/Redis.canvas"},
+		{"id":"1af6ed86c4d30927","x":13400,"y":-1000,"width":400,"height":400,"type":"file","file":"канвасы/Docker, k8s, CI CD  etc.canvas"},
+		{"id":"f35e0d5fbf93a186","x":12960,"y":-1000,"width":400,"height":400,"type":"file","file":"канвасы/Сети, HTTP, TCP, UDP, OS, GRPC.canvas"}
+	],
+	"edges":[],
+	"metadata":{
+		"version":"1.0-1.0",
+		"frontmatter":{}
+	}
+}
