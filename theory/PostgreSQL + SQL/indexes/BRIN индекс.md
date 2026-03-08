@@ -55,6 +55,6 @@ CREATE INDEX idx_logs ON logs USING BRIN(created_at) WITH (pages_per_range = 64)
 ```
 
 ## Связь
-- [[theory/PostgreSQL/indexes/B-tree индекс]] — точнее но в 300x больше
+- [[theory/PostgreSQL + SQL/indexes/B-tree индекс]] — точнее но в 300x больше
 - [[Какие бывают индексы в PostgreSQL - сводка]] — decision tree по типам
 - [[Селективность и издержки индексов]] — BRIN не помогает при рандомном порядке данных

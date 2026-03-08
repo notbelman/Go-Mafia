@@ -41,8 +41,8 @@ CREATE INDEX idx ON table USING HASH(column);          -- Hash
 ```
 
 ## Связь
-- [[theory/PostgreSQL/indexes/B-tree индекс]] — подробности дефолтного типа
+- [[theory/PostgreSQL + SQL/indexes/B-tree индекс]] — подробности дефолтного типа
 - [[GIN индекс]] — инвертированный индекс
 - [[GiST индекс]] — геоданные, ranges
 - [[BRIN индекс]] — append-only таблицы
-- [[theory/PostgreSQL/indexes/Hash индекс]] — только =, почти никогда
+- [[theory/PostgreSQL + SQL/indexes/Hash индекс]] — только =, почти никогда

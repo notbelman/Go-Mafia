@@ -112,7 +112,7 @@ SELECT LOWER(name), COUNT(*) FROM users GROUP BY LOWER(name);
 
 ## Связь
 
-- [[theory/PostgreSQL/indexes/B-tree индекс]] — отсортированные leaf pages = основа GroupAggregate
+- [[theory/PostgreSQL + SQL/indexes/B-tree индекс]] — отсортированные leaf pages = основа GroupAggregate
 - [[Составные индексы (multi-column)]] — правило левого префикса для GROUP BY
 - [[Expression индексы (functional)]] — GROUP BY LOWER(x) → expression индекс
 - [[Селективность и издержки индексов]] — низкая селективность → HashAggregate выгоднее

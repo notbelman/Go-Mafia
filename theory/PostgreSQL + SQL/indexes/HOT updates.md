@@ -67,6 +67,6 @@ WHERE relname = 'users';
 ```
 
 ## Связь
-- [[theory/PostgreSQL/indexes/B-tree индекс]] — fillfactor на индексе тоже влияет на page splits
+- [[theory/PostgreSQL + SQL/indexes/B-tree индекс]] — fillfactor на индексе тоже влияет на page splits
 - [[Dead tuples и bloat]] — HOT уменьшает мусор в индексах
 - [[Мониторинг индексов]] — n_tup_hot_upd в pg_stat_user_tables

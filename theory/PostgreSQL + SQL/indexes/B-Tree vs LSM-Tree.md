@@ -33,5 +33,5 @@ LSM:    запись → MemTable (RAM) → flush → SSTable (sequential I/O) �
 | Read-heavy, OLTP, транзакции | Write-heavy, логи, time-series |
 
 ## Связь
-- [[theory/PostgreSQL/indexes/B-tree индекс]] — внутреннее устройство B-tree в PG
+- [[theory/PostgreSQL + SQL/indexes/B-tree индекс]] — внутреннее устройство B-tree в PG
 - [[BRIN индекс]] — альтернатива B-tree для append-only данных
