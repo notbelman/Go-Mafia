@@ -18,5 +18,5 @@ CREATE INDEX idx_url ON pages USING HASH(url);
 ```
 
 ## Связь
-- [[theory/PostgreSQL + SQL/indexes/B-tree индекс]] — универсальнее, подходит почти всегда
+- [[theory/PostgreSQL AND SQL/indexes/B-tree индекс]] — универсальнее, подходит почти всегда
 - [[Какие бывают индексы в PostgreSQL - сводка]] — decision tree по типам

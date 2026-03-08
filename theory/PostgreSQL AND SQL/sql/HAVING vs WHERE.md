@@ -69,6 +69,6 @@ SELECT COUNT(*) FROM employees HAVING COUNT(*) > 0 AND MAX(age) > 60;
 Редкий случай, но валидный SQL.
 
 ## Связь
-- [[GROUP BY и индексы]] — GROUP BY + индекс = GroupAggregate без сортировки
+- [[Group by и индексы]] — GROUP BY + индекс = GroupAggregate без сортировки
 - [[Оконные функции]] — оконные функции после HAVING, до ORDER BY
 - [[EXPLAIN основы]] — Filter vs HAVING в плане запроса

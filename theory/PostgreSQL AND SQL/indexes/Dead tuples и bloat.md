@@ -86,6 +86,6 @@ CREATE INDEX CONCURRENTLY idx_email ON users(email);
 ## Связь
 - [[Heap страницы и TID]] — dead tuples в heap
 - [[MVCC (Multi-Version Concurrency Control)]] — почему PG не удаляет физически
-- [[theory/PostgreSQL + SQL/indexes/B-tree индекс]] — fillfactor снижает page splits при UPDATE
+- [[theory/PostgreSQL AND SQL/indexes/B-tree индекс]] — fillfactor снижает page splits при UPDATE
 - [[HOT updates]] — UPDATE без обновления индекса
 - [[Мониторинг индексов]] — как отслеживать bloat

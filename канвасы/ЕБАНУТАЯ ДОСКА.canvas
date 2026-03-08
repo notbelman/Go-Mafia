@@ -1,6 +1,6 @@
 {
 	"nodes":[
-		{"id":"0d9f9f5c29b03492","x":13840,"y":-1472,"width":400,"height":400,"type":"file","file":"канвасы/PostgreSQL + SQL.canvas"},
+		{"id":"0d9f9f5c29b03492","x":13840,"y":-1472,"width":400,"height":400,"type":"file","file":"канвасы/PostgreSQL AND SQL.canvas"},
 		{"id":"a0d06aed1ce64981","x":14280,"y":-1472,"width":400,"height":400,"type":"file","file":"канвасы/GO.canvas"},
 		{"id":"d5ba9f122f3cd683","x":14280,"y":-1000,"width":400,"height":400,"type":"file","file":"канвасы/Систем-дизайн.canvas"},
 		{"id":"773378239bcad5ef","x":13840,"y":-1000,"width":400,"height":400,"type":"file","file":"канвасы/Брокеры.canvas"},

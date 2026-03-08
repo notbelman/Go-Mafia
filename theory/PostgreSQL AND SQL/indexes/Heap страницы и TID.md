@@ -69,6 +69,6 @@ SELECT * FROM users WHERE email = 'alice@gmail.com';
 3. Читаем: `{id:3, email:'alice@gmail.com'}`
 
 ## Связь
-- [[theory/PostgreSQL + SQL/indexes/B-tree индекс]] — дефолтная структура индекса, хранит ключи + TID
+- [[theory/PostgreSQL AND SQL/indexes/B-tree индекс]] — дефолтная структура индекса, хранит ключи + TID
 - [[Dead tuples и bloat]] — DELETE/UPDATE оставляют мёртвые строки в heap
 - [[Покрывающие индексы (covering index Index-Only Scan)]] — когда не нужно ходить в heap

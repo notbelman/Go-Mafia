@@ -65,6 +65,6 @@ CREATE INDEX idx ON events USING GIN(data jsonb_path_ops);
 **Нет:** простые скалярные значения (B-tree лучше), частые вставки, маленькие таблицы.
 
 ## Связь
-- [[theory/PostgreSQL + SQL/indexes/B-tree индекс]] — для скаляров лучше B-tree
+- [[theory/PostgreSQL AND SQL/indexes/B-tree индекс]] — для скаляров лучше B-tree
 - [[GiST индекс (Generalized Search Tree)]] — альтернатива: быстрее пишет, медленнее ищет
 - [[pg_trgm и поиск подстроки]] — GIN + pg_trgm для LIKE '%text%'
