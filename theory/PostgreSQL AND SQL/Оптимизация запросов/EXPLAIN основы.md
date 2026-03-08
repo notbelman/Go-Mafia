@@ -1,5 +1,6 @@
 - `EXPLAIN` — план (что PG собирается делать). `EXPLAIN ANALYZE` — план + **реальные метрики** (выполняет запрос!)
 - **Cost** = условные единицы, не секунды. `seq_page_cost=1.0`, `random_page_cost=4.0`, `cpu_tuple_cost=0.01`. Index Scan на много строк может быть **дороже** Seq Scan (random × 4)
+		`cost = (pages_read × page_cost) + (rows × cpu_tuple_cost)`
 - **actual time × loops** = реальное время. `actual time=0.05 loops=1000` → **50 мс**, не 0.05
 - Читать план **снизу вверх, изнутри наружу**. Самый вложенный узел выполняется первым
 - `EXPLAIN ANALYZE` на INSERT/UPDATE/DELETE — **оборачивай в транзакцию** с ROLLBACK
