@@ -1,3 +1,8 @@
+- **Частые коды**: `InvalidArgument` (невалидный запрос), `NotFound`, `AlreadyExists`, `Unauthenticated` (нет токена), `PermissionDenied` (нет прав), `Unavailable` (retry), `DeadlineExceeded` (таймаут)
+- **WithDetails()** — структурированные ошибки: `BadRequest` (какое поле), `RetryInfo` (когда повторить), `ErrorInfo` (reason + domain). Готовые типы в `errdetails`
+- **Паттерн**: бизнес-логика возвращает свои ошибки → **маппинг в gRPC status на границе** (handler/interceptor), не внутри бизнес-логики
+
+---
 
 | Код | Когда использовать |
 |:----|:-------------------|
@@ -45,6 +50,9 @@ for _, detail := range st.Details() {
 }
 ```
 
-**Паттерн:** domain error → маппинг в gRPC status на границе сервиса
-(не в бизнес-логике). Бизнес-логика возвращает свои ошибки,
-interceptor или handler маппит их в codes + details.
+**Паттерн:** domain error → маппинг в gRPC status на границе сервиса (не в бизнес-логике).
+
+## Связь
+- [[gRPC — что это и когда]] — gRPC вместо HTTP status codes
+- [[Interceptors]] — маппинг ошибок через interceptor
+- [[HTTP Status Codes]] — аналогия: gRPC codes ↔ HTTP codes
