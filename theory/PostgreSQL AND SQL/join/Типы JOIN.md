@@ -39,12 +39,12 @@ SELECT * FROM t1 LEFT JOIN t2 ON t1.id = t2.id;
 ```
 
 | t1.id | t2.id |
-|---|---|
-| 1 | 1 |
-| 1 | 1 |
-| 1 | 1 |
-| 1 | 1 |
-| 3 | NULL |
+| ----- | ----- |
+| 1     | 1     |
+| 1     | 1     |
+| 1     | 1     |
+| 1     | 1     |
+| 3     | NULL  |
 
 INNER + строка 3 без пары → NULL справа. **5 строк из 3 в левой таблице.**
 
@@ -68,18 +68,19 @@ SELECT * FROM t1 RIGHT JOIN t2 ON t1.id = t2.id;
 ## FULL OUTER JOIN
 
 ```sql
+
 SELECT * FROM t1 FULL OUTER JOIN t2 ON t1.id = t2.id;
 ```
 
 | t1.id | t2.id |
-|---|---|
-| 1 | 1 |
-| 1 | 1 |
-| 1 | 1 |
-| 1 | 1 |
-| 3 | NULL |
-| NULL | 4 |
-| NULL | 5 |
+| ----- | ----- |
+| 1     | 1     |
+| 1     | 1     |
+| 1     | 1     |
+| 1     | 1     |
+| 3     | NULL  |
+| NULL  | 4     |
+| NULL  | 5     |
 
 LEFT + RIGHT вместе. В MySQL нет — эмулировать через `UNION ALL`.
 

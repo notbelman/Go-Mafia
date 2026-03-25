@@ -77,3 +77,4 @@ SELECT * FROM users WHERE email = 'x@y.com';
 -- ❌ Не использует (другое значение)
 SELECT * FROM users WHERE email = 'x@y.com' AND is_active = false;
 ```
+
