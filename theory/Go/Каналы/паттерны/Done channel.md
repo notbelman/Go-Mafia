@@ -94,7 +94,8 @@ func (w *Worker) Shutdown() {
 завершения
 Каналов             0                     2
 Когда               eventual termination  guaranteed termination
-``` ^done-vs-context
+``` 
+^done-vs-context
 
 **Не смешивай**: контекст + канал завершения = лишняя сложность. Выбери одно. ^done-no-mix
 
