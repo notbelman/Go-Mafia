@@ -10,18 +10,23 @@ schedule():
 2. runqget()                  — runnext → runq (LRQ)
 
 findRunnable():
-1. traceReader()          — горутина трассировки (если включена)
-2. gcController worker    — GC worker (если GC активен)
-3. globrunqget()          — каждый 61-й тик (fairness, GRQ)
-4. runqget()              — runnext → runq (LRQ)
-5. globrunqgetbatch()     — глобальная очередь (GRQ), берёт батч в LRQ
-6. netpoll(0)             — неблокирующий poll (оптимизация перед стилингом)
-7. stealWork()            — обход всех P в рандомном порядке:
-                              • runqsteal() — крадёт половину LRQ чужого P
-                              • checkTimers() — забирает таймеры чужого P
-8. gcMarkWorkerIdleMode   — idle GC worker (если есть незанятый P)
-9. netpoll(delay)         — блокирующий poll до следующего таймера
-10. stopm()               — засыпает
+1.  traceReader()              — горутина трассировки (если включена)
+2.  gcController worker        — GC worker (если GC активен)
+3.  globrunqget()              — каждый 61-й тик (fairness, GRQ)
+4.  runqget()                  — runnext → runq (LRQ)
+5.  globrunqgetbatch()         — глобальная очередь (GRQ), берёт батч в LRQ
+6.  netpoll(0)                 — неблокирующий poll (оптимизация перед стилингом)
+7.  stealWork()                — 4 прохода по всем P в рандомном порядке:
+                                  • проходы 1-3: только runqsteal() — крадёт половину LRQ чужого P
+                                  • проход 4:    runqsteal() + checkTimers() — крадёт runq И таймеры
+8.  globrunqget()              — повторная проверка GRQ (пока стилили, могли положить)
+9.  gcMarkWorkerIdleMode       — idle GC worker (если есть незанятый P)
+10. spinning reset + recheck   — если M был spinning:
+                                  • сброс m.spinning, декремент nmspinning
+                                  • повторная проверка ВСЕХ источников (LRQ, GRQ, netpoll, стилинг)
+                                  • если нашёл работу → goto top
+11. netpoll(delay)             — блокирующий poll до следующего таймера
+12. stopm()                    — засыпает (mput → pidleput → futex)
 ```
 ^ws-order
 
