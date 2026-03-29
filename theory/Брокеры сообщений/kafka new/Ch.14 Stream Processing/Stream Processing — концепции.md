@@ -174,4 +174,4 @@ Stream-Stream Join:          два потока, windowed join
 - [[Transactions]] — Kafka Streams использует транзакции под капотом (Ch.8)
 - [[Compaction]] — changelog topics для state recovery (Ch.6)
 - [[Consumer Groups и Rebalancing]] — Kafka Streams использует consumer groups (Ch.4)
-- [[Kafka — обзор]] — stream processing как use case Kafka (Ch.1)
+- [[Kafka — обзор (Kafka The Definitive Guide)]] — stream processing как use case Kafka (Ch.1)
