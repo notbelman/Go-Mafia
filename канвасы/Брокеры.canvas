@@ -53,7 +53,6 @@
 		{"id":"3448452312e66298","type":"file","file":"theory/Брокеры сообщений/Apache Kafka/Общее/ZooKeeper → KRaft.md","x":119,"y":-307,"width":660,"height":519},
 		{"id":"e7015bf59db6c8ab","type":"file","file":"theory/Брокеры сообщений/Pasted image 20260213193705.png","x":-1221,"y":-926,"width":399,"height":204},
 		{"id":"f8a7cbb3414a3e9b","type":"file","file":"theory/Брокеры сообщений/Apache Kafka/Общее/Ключевые сущности.md","x":-294,"y":-774,"width":720,"height":440},
-		{"id":"368b7236a15efa8a","type":"file","file":"theory/Брокеры сообщений/kafka new/Kafka — обзор (Kafka The Definitive Guide).md","x":-7429,"y":-2044,"width":785,"height":380,"color":"6"},
 		{"id":"1f94c7a4a2af39f6","type":"file","file":"theory/Брокеры сообщений/kafka new/Kafka Internals — обзор.md","x":-7429,"y":-1543,"width":785,"height":283,"color":"4"},
 		{"id":"52460892b5b0becc","type":"file","file":"theory/Брокеры сообщений/kafka new/Delivery Semantics.md","x":-9440,"y":628,"width":840,"height":309,"color":"5"},
 		{"id":"37f499a518d2451b","type":"file","file":"theory/Брокеры сообщений/kafka new/Idempotent Producer.md","x":-8325,"y":618,"width":931,"height":330,"color":"5"},
@@ -73,7 +72,8 @@
 		{"id":"9dc845fff5f7fd09","type":"file","file":"theory/Брокеры сообщений/kafka new/Controller.md","x":-8420,"y":-750,"width":742,"height":297,"color":"4"},
 		{"id":"5b44ea6804f0a5fb","type":"file","file":"theory/Брокеры сообщений/kafka new/Request Processing.md","x":-6480,"y":-905,"width":906,"height":314,"color":"4"},
 		{"id":"4b904db1c287352d","type":"file","file":"theory/Брокеры сообщений/kafka new/Replication.md","x":-7470,"y":-907,"width":868,"height":316,"color":"4"},
-		{"id":"5aacad6b61c2b600","type":"file","file":"theory/Брокеры сообщений/kafka new/Reliable Data Delivery — обзор.md","x":-9680,"y":-515,"width":880,"height":260,"color":"1"}
+		{"id":"5aacad6b61c2b600","type":"file","file":"theory/Брокеры сообщений/kafka new/Reliable Data Delivery — обзор.md","x":-9680,"y":-515,"width":880,"height":260,"color":"1"},
+		{"id":"368b7236a15efa8a","type":"file","file":"theory/Брокеры сообщений/kafka new/Ch.1 Intro/Kafka — обзор (Kafka The Definitive Guide).md","x":-7429,"y":-2040,"width":909,"height":380,"color":"6"}
 	],
 	"edges":[
 		{"id":"ffe1aa18589af856","fromNode":"988d3074571b8c10","fromSide":"right","toNode":"da9ca42c94c485a1","toSide":"left"},
