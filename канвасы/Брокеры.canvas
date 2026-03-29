@@ -53,14 +53,13 @@
 		{"id":"3448452312e66298","type":"file","file":"theory/Брокеры сообщений/Apache Kafka/Общее/ZooKeeper → KRaft.md","x":119,"y":-307,"width":660,"height":519},
 		{"id":"e7015bf59db6c8ab","type":"file","file":"theory/Брокеры сообщений/Pasted image 20260213193705.png","x":-1221,"y":-926,"width":399,"height":204},
 		{"id":"f8a7cbb3414a3e9b","type":"file","file":"theory/Брокеры сообщений/Apache Kafka/Общее/Ключевые сущности.md","x":-294,"y":-774,"width":720,"height":440},
-		{"id":"368b7236a15efa8a","type":"file","file":"theory/Брокеры сообщений/kafka new/Kafka — обзор.md","x":-7429,"y":-2044,"width":785,"height":380,"color":"6"},
+		{"id":"368b7236a15efa8a","type":"file","file":"theory/Брокеры сообщений/kafka new/Kafka — обзор (Kafka The Definitive Guide).md","x":-7429,"y":-2044,"width":785,"height":380,"color":"6"},
 		{"id":"1f94c7a4a2af39f6","type":"file","file":"theory/Брокеры сообщений/kafka new/Kafka Internals — обзор.md","x":-7429,"y":-1543,"width":785,"height":283,"color":"4"},
 		{"id":"52460892b5b0becc","type":"file","file":"theory/Брокеры сообщений/kafka new/Delivery Semantics.md","x":-9440,"y":628,"width":840,"height":309,"color":"5"},
 		{"id":"37f499a518d2451b","type":"file","file":"theory/Брокеры сообщений/kafka new/Idempotent Producer.md","x":-8325,"y":618,"width":931,"height":330,"color":"5"},
 		{"id":"50977fd60598c686","type":"file","file":"theory/Брокеры сообщений/kafka new/Transactions.md","x":-7058,"y":628,"width":842,"height":330,"color":"5"},
 		{"id":"ebb8616868a3f2f2","type":"file","file":"theory/Брокеры сообщений/kafka new/Stream Processing — концепции.md","x":-6040,"y":628,"width":840,"height":333,"color":"3"},
 		{"id":"8ffeed88e9fb55a7","type":"file","file":"theory/Брокеры сообщений/kafka new/Kafka Streams — архитектура.md","x":-4980,"y":628,"width":820,"height":353,"color":"3"},
-		{"id":"5aacad6b61c2b600","type":"file","file":"theory/Брокеры сообщений/kafka new/Reliable Data Delivery — обзор.md","x":-9440,"y":-503,"width":880,"height":260,"color":"1"},
 		{"id":"d664e9bdbdfc905d","type":"file","file":"theory/Брокеры сообщений/kafka new/Producer — архитектура.md","x":-8800,"y":-1724,"width":751,"height":361},
 		{"id":"85640b5b3991e525","type":"file","file":"theory/Брокеры сообщений/kafka new/Partitioning.md","x":-9580,"y":-1104,"width":780,"height":360},
 		{"id":"71dcf706561b08eb","type":"file","file":"theory/Брокеры сообщений/kafka new/Consumer Groups и Rebalancing.md","x":-6080,"y":-1543,"width":772,"height":359},
@@ -73,7 +72,8 @@
 		{"id":"7ab4d65e904cf130","type":"file","file":"theory/Брокеры сообщений/kafka new/Producer — надёжность.md","x":-8599,"y":-1145,"width":825,"height":340,"color":"1"},
 		{"id":"9dc845fff5f7fd09","type":"file","file":"theory/Брокеры сообщений/kafka new/Controller.md","x":-8420,"y":-750,"width":742,"height":297,"color":"4"},
 		{"id":"5b44ea6804f0a5fb","type":"file","file":"theory/Брокеры сообщений/kafka new/Request Processing.md","x":-6480,"y":-905,"width":906,"height":314,"color":"4"},
-		{"id":"4b904db1c287352d","type":"file","file":"theory/Брокеры сообщений/kafka new/Replication.md","x":-7470,"y":-907,"width":868,"height":316,"color":"4"}
+		{"id":"4b904db1c287352d","type":"file","file":"theory/Брокеры сообщений/kafka new/Replication.md","x":-7470,"y":-907,"width":868,"height":316,"color":"4"},
+		{"id":"5aacad6b61c2b600","type":"file","file":"theory/Брокеры сообщений/kafka new/Reliable Data Delivery — обзор.md","x":-9680,"y":-515,"width":880,"height":260,"color":"1"}
 	],
 	"edges":[
 		{"id":"ffe1aa18589af856","fromNode":"988d3074571b8c10","fromSide":"right","toNode":"da9ca42c94c485a1","toSide":"left"},
