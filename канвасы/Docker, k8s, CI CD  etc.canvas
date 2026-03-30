@@ -12,25 +12,29 @@
 		{"id":"d916f98f108600e2","type":"file","file":"theory/Docker, k8s, CI CD etc/Docker/Docker Compose.md","x":-1276,"y":-456,"width":400,"height":400},
 		{"id":"6509a6dd78bd4249","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.1 Intro/Kubernetes — обзор (Kubernetes in Action).md","x":-5440,"y":740,"width":960,"height":300,"color":"6"},
 		{"id":"70a6ea0a43a9ad9d","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.1 Intro/Архитектура кластера.md","x":-6480,"y":1140,"width":980,"height":280},
-		{"id":"b9ef786406f13fc6","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.4 API/Kubernetes API и манифесты.md","x":-4280,"y":1160,"width":960,"height":340},
 		{"id":"40071b51ca924dae","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.2 Containers/Контейнеры — что внутри.md","x":-5425,"y":1160,"width":945,"height":300},
-		{"id":"f86655e029c16d54","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.5 Pods/Multi-container Pods.md","x":-4952,"y":1600,"width":932,"height":320},
 		{"id":"a6e2f2c98927b833","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.5 Pods/Pod — что это и зачем.md","x":-6100,"y":1600,"width":860,"height":320,"color":"1"},
 		{"id":"0bfc67216ba30e6d","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.6 Lifecycle/Pod lifecycle.md","x":-7060,"y":1960,"width":860,"height":340},
 		{"id":"81b642ca0ffe6255","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.6 Lifecycle/Probes и Lifecycle Hooks.md","x":-7080,"y":2440,"width":920,"height":326},
 		{"id":"1e324a27255766dd","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.16 StatefulSets/StatefulSet — концепт.md","x":-7080,"y":4119,"width":1015,"height":360,"color":"5"},
 		{"id":"9218bf710d5812e6","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.16 StatefulSets/StatefulSet — updates и Operators.md","x":-7080,"y":4659,"width":1015,"height":340,"color":"5"},
+		{"id":"64fea20dc81cfcb8","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.11 Services/Service — DNS, endpoints, readiness.md","x":-7320,"y":3091,"width":940,"height":329,"color":"3"},
+		{"id":"bc4f1bfa604b5bb6","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.14 ReplicaSets/ReplicaSet.md","x":-6320,"y":2820,"width":920,"height":354,"color":"2"},
+		{"id":"b9ef786406f13fc6","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.4 API/Kubernetes API и манифесты.md","x":-4280,"y":1160,"width":960,"height":340},
+		{"id":"f86655e029c16d54","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.5 Pods/Multi-container Pods.md","x":-4952,"y":1600,"width":932,"height":320},
 		{"id":"e89e394cf4b79071","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.7 Organization/Namespaces, labels, selectors, annotations.md","x":-4160,"y":1960,"width":920,"height":340},
 		{"id":"d98956b184798e8b","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.10 Storage/PV, PVC, StorageClass.md","x":-5160,"y":1980,"width":960,"height":320,"color":"6"},
 		{"id":"1b7741fb00df7954","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.8 Config/ConfigMaps.md","x":-5600,"y":2310,"width":920,"height":330,"color":"6"},
 		{"id":"b8b7b89d1396a62b","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.13 Gateway API/Gateway API.md","x":-5181,"y":5120,"width":1090,"height":360,"color":"3"},
 		{"id":"1b5c67c030463390","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.11 Services/Service — типы и routing.md","x":-4899,"y":4101,"width":1036,"height":320,"color":"3"},
 		{"id":"83eda5733575a6f6","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.12 Ingress/Ingress.md","x":-5166,"y":4600,"width":1060,"height":319,"color":"3"},
-		{"id":"e77a9488d5807a85","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.8 Config/Secrets и Downward API.md","x":-4980,"y":2700,"width":980,"height":350,"color":"6"},
-		{"id":"64fea20dc81cfcb8","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.11 Services/Service — DNS, endpoints, readiness.md","x":-7320,"y":3091,"width":940,"height":329,"color":"3"},
-		{"id":"bc4f1bfa604b5bb6","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.14 ReplicaSets/ReplicaSet.md","x":-6320,"y":2820,"width":920,"height":354,"color":"2"},
-		{"id":"99d9a15db8751f8f","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.15 Deployments/Deployment — стратегии обновления.md","x":-5120,"y":3080,"width":905,"height":329,"color":"2"},
-		{"id":"b26902796edb761f","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.15 Deployments/Deployment — rollback и стратегии.md","x":-5199,"y":3680,"width":1019,"height":340,"color":"2"}
+		{"id":"b26902796edb761f","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.15 Deployments/Deployment — rollback и стратегии.md","x":-5199,"y":3680,"width":1019,"height":340,"color":"2"},
+		{"id":"bd001427c24cdbfd","x":-2880,"y":1170,"width":1080,"height":320,"color":"4","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/extra info/Admission Controllers и Webhooks.md"},
+		{"id":"6a39bb7079602e2a","x":-2740,"y":1995,"width":940,"height":270,"color":"4","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/extra info/Affinity, Taints, Tolerations.md"},
+		{"id":"99d9a15db8751f8f","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.15 Deployments/Deployment — стратегии обновления.md","x":-5105,"y":3120,"width":905,"height":329,"color":"2"},
+		{"id":"e77a9488d5807a85","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/Ch.8 Config/Secrets и Downward API.md","x":-4899,"y":2680,"width":980,"height":350,"color":"6"},
+		{"id":"94f9fd09889ce2d8","x":-5960,"y":4160,"width":920,"height":319,"color":"4","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/extra info/HPA, VPA, Cluster Autoscaler.md"},
+		{"id":"a5ee2a4e9d31fe75","x":-3640,"y":3120,"width":940,"height":320,"color":"4","type":"file","file":"theory/Docker, k8s, CI CD etc/k8s/extra info/Requests, Limits, QoS.md"}
 	],
 	"edges":[
 		{"id":"4cb14b8ae7f1fe8e","fromNode":"6509a6dd78bd4249","fromSide":"left","toNode":"70a6ea0a43a9ad9d","toSide":"top","label":"control plane + workers"},
@@ -56,6 +60,8 @@
 		{"id":"29d7ace5af1cac6e","fromNode":"1b5c67c030463390","fromSide":"bottom","toNode":"83eda5733575a6f6","toSide":"top","label":"Ingress → backend Service"},
 		{"id":"773d1342884bb3fa","fromNode":"1e324a27255766dd","fromSide":"top","toNode":"64fea20dc81cfcb8","toSide":"bottom","label":"headless Service (DNS)"},
 		{"id":"3accc62cbde126ba","fromNode":"1e324a27255766dd","fromSide":"bottom","toNode":"9218bf710d5812e6","toSide":"top","label":"RollingUpdate, OnDelete, Operators"},
-		{"id":"fb8c38d8cbe6a4f7","fromNode":"83eda5733575a6f6","fromSide":"bottom","toNode":"b8b7b89d1396a62b","toSide":"top","label":"Gateway API заменяет"}
+		{"id":"fb8c38d8cbe6a4f7","fromNode":"83eda5733575a6f6","fromSide":"bottom","toNode":"b8b7b89d1396a62b","toSide":"top","label":"Gateway API заменяет"},
+		{"id":"967e37b7e2098e1f","fromNode":"b9ef786406f13fc6","fromSide":"right","toNode":"bd001427c24cdbfd","toSide":"left","label":"admission pipeline"},
+		{"id":"016091f38ed63893","fromNode":"e89e394cf4b79071","fromSide":"right","toNode":"6a39bb7079602e2a","toSide":"left","label":"node labels → scheduling"}
 	]
 }
