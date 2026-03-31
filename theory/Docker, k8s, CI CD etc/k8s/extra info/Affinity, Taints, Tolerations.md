@@ -1,7 +1,10 @@
-- **nodeSelector** — простейший способ: pod идёт на ноду с указанными labels. **nodeAffinity** — расширенная версия: preferred/required, операторы In/NotIn/Exists
-- **podAffinity** — размещать pod РЯДОМ с другими pod'ами (на той же ноде/зоне). **podAntiAffinity** — размещать pod ПОДАЛЬШЕ от других pod'ов. Ключевой механизм "реплики на разных нодах"
-- **Taints** (на ноде) + **Tolerations** (на pod'е) — обратная механика: нода отталкивает pod'ы, если pod не tolerate'ит taint. Effects: NoSchedule, PreferNoSchedule, NoExecute
-- Affinity = pod выбирает куда хочет. Taints = нода решает кого пускает. Обе механики работают вместе
+- Две механики управляют тем, какой Pod на какую ноду попадёт. **Affinity** — Pod говорит "я хочу туда". **Taints/Tolerations** — нода говорит "я не пускаю к себе". Работают вместе
+- **nodeSelector** — простейший способ: Pod запускается только на нодах с указанными labels. Нет подходящей ноды — Pod останется Pending
+- **nodeAffinity** — расширенный nodeSelector. Два режима: **required** (строго, как nodeSelector) и **preferred** (желательно, но не обязательно). Плюс операторы In/NotIn/Exists
+- **podAffinity** — "запусти меня РЯДОМ с другим Pod'ом" (на той же ноде/зоне). Пример: web рядом с cache для низкой latency
+- **podAntiAffinity** — "запусти меня ПОДАЛЬШЕ от другого Pod'а". Главный use case: реплики Deployment'а на РАЗНЫХ нодах для отказоустойчивости
+- **Taints** (на ноде) + **Tolerations** (на Pod'е) — нода отталкивает все Pod'ы, кроме тех у кого есть toleration. Пример: GPU-ноды — taint "gpu=true", только Pod'ы с toleration попадут туда. Три эффекта: **NoSchedule** (не ставь новые), **PreferNoSchedule** (постарайся не ставить), **NoExecute** (не ставь новые + выгони существующие)
+- Control Plane ноды имеют taint `node-role.kubernetes.io/control-plane: NoSchedule` — поэтому обычные Pod'ы на master не попадают
 
 ---
 
@@ -13,6 +16,7 @@ spec:
     disktype: ssd                # pod только на ноды с label disktype=ssd
     zone: us-east-1a
 ```
+
 ^aff-nodeselector
 
 ## nodeAffinity (расширенный)
@@ -35,6 +39,7 @@ spec:
             operator: In
             values: [ssd]
 ```
+
 ^aff-node-affinity
 
 ```
@@ -53,6 +58,7 @@ IgnoredDuringExecution → если label на ноде изменится ПО�
   topology.kubernetes.io/region → регион (us-east-1)
   node.kubernetes.io/instance-type → тип инстанса (m5.xlarge)
 ```
+
 ^aff-node-labels
 
 ## podAffinity и podAntiAffinity
@@ -80,6 +86,7 @@ spec:
             values: [kiada]
         topologyKey: kubernetes.io/hostname    # "на РАЗНЫХ нодах"
 ```
+
 ^aff-pod-affinity
 
 ```
@@ -97,6 +104,7 @@ podAntiAffinity use cases (САМЫЙ ЧАСТЫЙ ВОПРОС):
   → реплики Deployment'а на РАЗНЫХ нодах
   → реплики БД в разных зонах (HA)
 ```
+
 ^aff-topology-key
 
 ## ⭐ Как развернуть реплики на разных нодах
@@ -128,6 +136,7 @@ spec:
 # Если нод меньше → pod Pending
 # Для гибкости: preferred вместо required
 ```
+
 ^aff-replicas-different-nodes
 
 ## Taints и Tolerations
@@ -139,6 +148,7 @@ kubectl taint nodes worker-1 dedicated=gpu:NoSchedule
 # Убрать taint:
 kubectl taint nodes worker-1 dedicated=gpu:NoSchedule-
 ```
+
 ^taint-commands
 
 ```yaml
@@ -150,6 +160,7 @@ spec:
     value: gpu
     effect: NoSchedule       # NoSchedule, PreferNoSchedule, NoExecute
 ```
+
 ^taint-toleration
 
 ```
@@ -172,6 +183,7 @@ Control plane node taint:
   node-role.kubernetes.io/control-plane: NoSchedule
   → поэтому обычные pod'ы не попадают на master
 ```
+
 ^taint-effects
 
 ## Affinity vs Taints — сравнение
@@ -189,6 +201,7 @@ Eviction            нет (IgnoredDuringExecution)   NoExecute evict'ит pod'�
   nodeAffinity → GPU pod'ы ХОТЯТ на GPU-ноды
   → taint отталкивает "чужих", affinity притягивает "своих"
 ```
+
 ^aff-vs-taints
 
 ## topologySpreadConstraints (дополнение)
@@ -207,9 +220,11 @@ spec:
 # "распредели pod'ы равномерно по зонам, разница не больше 1"
 # Более выразительно чем podAntiAffinity для multi-zone HA
 ```
+
 ^aff-topology-spread
 
 ## Связь
+
 - [[Namespaces, labels, selectors, annotations]] — labels на нодах и pod'ах для affinity (Ch.7)
 - [[ReplicaSet]] — pod'ы RS распределяются по нодам (Ch.14)
 - [[StatefulSet — концепт]] — node failure + taints = pod Terminating (Ch.16)

@@ -1,25 +1,27 @@
-- **StatefulSet** = Deployment для stateful workloads. Pod'ы получают **ordinal имена** (quiz-0, quiz-1...), каждый — свой **PersistentVolumeClaim**. Pets vs Cattle: Deployment = cattle (взаимозаменяемы), StatefulSet = pets (уникальная identity)
+- **StatefulSet** — для stateful приложений: базы данных (MongoDB, PostgreSQL), очереди (Kafka, RabbitMQ), кэши (Redis Cluster) — всё где каждый инстанс уникален и хранит свои данные. В отличие от Deployment: Pod'ы получают **ordinal имена** (quiz-0, quiz-1...), каждый — свой **PersistentVolumeClaim**, стабильный DNS. 
+  Pets vs Cattle: Deployment = cattle (взаимозаменяемы), StatefulSet = pets (уникальная identity)
+  **PersistentVolumeClaim**. Pets vs Cattle: Deployment = cattle (взаимозаменяемы), StatefulSet = pets (уникальная identity)
 - **Headless Service** (clusterIP: None) + StatefulSet → каждый pod получает DNS record: `quiz-0.quiz-pods.ns.svc.cluster.local`. Stable network identity при пересоздании pod'а
 - **volumeClaimTemplates** — PVC создаётся для каждого pod'а автоматически. Scale down → PVC сохраняются (default). Scale up → pod'ы переподключаются к тем же PVC
-- **At-most-one semantics:** StatefulSet НЕ создаёт replacement pod при node failure (в отличие от ReplicaSet). Нужно ручное удаление `--force --grace-period 0`
-- **podManagementPolicy:** OrderedReady (default — по одному, ждёт ready) vs Parallel (все сразу). OrderedReady может привести к deadlock
+- **At-most-one semantics** (гарантия что НЕ будет двух pod'ов с одним ordinal одновременно — защита от split-brain)**:** StatefulSet НЕ создаёт replacement pod при node failure (в отличие от ReplicaSet). Нужно ручное удаление `--force --grace-period 0`
+- **podManagementPolicy:** OrderedReady (default — по одному, ждёт ready) vs Parallel (все сразу). OrderedReady может привести к deadlock, например: pod-1 ждёт pod-0, но pod-0 не может стать Ready без pod-1 (circular dependency)
 
 ---
 
 ## StatefulSet vs Deployment
 
-```
-                        Deployment              StatefulSet
-Pod names               random (hash+suffix)    ordinal (quiz-0, quiz-1...)
-Pod identity            fungible (cattle)       stable (pets)
-PVC per pod             нет (общий PVC)         да (volumeClaimTemplates)
-Pod creation order      все сразу               по одному (OrderedReady) или сразу
-Scale down order        по правилам             highest ordinal first
-DNS per pod             нет                     да (через headless Service)
-Node failure            auto replacement        НЕТ auto replacement (at-most-one)
-Update strategy         Recreate/RollingUpdate  RollingUpdate/OnDelete
-Owns pods via           ReplicaSet              напрямую (нет RS)
-```
+| Параметр | **Deployment** | **StatefulSet** |
+|---|---|---|
+| **Pod names** | random (hash+suffix) | **ordinal** (quiz-0, quiz-1...) |
+| **Pod identity** | fungible (**cattle**) | stable (**pets**) |
+| **PVC per pod** | нет (общий PVC) | да (**volumeClaimTemplates**) |
+| **Pod creation order** | все сразу | по одному (**OrderedReady**) или сразу |
+| **Scale down order** | по правилам | **highest ordinal first** |
+| **DNS per pod** | нет | да (через **headless Service**) |
+| **Node failure** | auto replacement | **НЕТ** auto replacement (**at-most-one**) |
+| **Update strategy** | Recreate / RollingUpdate | RollingUpdate / OnDelete |
+| **Owns pods via** | ReplicaSet | **напрямую** (нет RS) |
+
 ^sts-vs-deploy
 
 ## Manifest
@@ -60,6 +62,7 @@ spec:
         requests:
           storage: 1Gi
 ```
+
 ^sts-manifest
 
 ## Headless Service для StatefulSet
@@ -78,65 +81,73 @@ spec:
   - name: mongodb
     port: 27017
 ```
+
 ^sts-headless
 
-```
-DNS records:
-  quiz-pods.kiada.svc.cluster.local          → IPs всех pod'ов
-  quiz-0.quiz-pods.kiada.svc.cluster.local   → IP quiz-0
-  quiz-1.quiz-pods.kiada.svc.cluster.local   → IP quiz-1
-  quiz-2.quiz-pods.kiada.svc.cluster.local   → IP quiz-2
+#### DNS records
 
-SRV records (peer discovery):
-  _mongodb._tcp.quiz-pods.kiada.svc.cluster.local
-  → используется MongoDB client: mongodb+srv://quiz-pods.kiada.svc.cluster.local
+- `quiz-pods.kiada.svc.cluster.local` → **IPs всех pod'ов**
+- `quiz-0.quiz-pods.kiada.svc.cluster.local` → **IP quiz-0**
+- `quiz-1.quiz-pods.kiada.svc.cluster.local` → **IP quiz-1**
+- `quiz-2.quiz-pods.kiada.svc.cluster.local` → **IP quiz-2**
 
-Два Service'а — типичный паттерн:
-  quiz-pods (headless) — peer discovery, publishNotReadyAddresses: true
-  quiz (regular)       — client traffic, только ready pod'ы
-```
+#### SRV records (peer discovery)
+
+- `_mongodb._tcp.quiz-pods.kiada.svc.cluster.local`
+- Используется **MongoDB client**: `mongodb+srv://quiz-pods.kiada.svc.cluster.local`
+
+#### Два Service'а — типичный паттерн
+
+| Service | Назначение |
+|---|---|
+| **quiz-pods** (headless) | **peer discovery**, `publishNotReadyAddresses: true` |
+| **quiz** (regular) | **client traffic**, только **ready** pod'ы |
+
 ^sts-dns
 
 ## Pod Names и PVC Names
 
-```
-StatefulSet: quiz, replicas: 3
+**StatefulSet: quiz**, replicas: 3
 
+```
 Pods:   quiz-0    quiz-1    quiz-2
 PVCs:   db-data-quiz-0  db-data-quiz-1  db-data-quiz-2
         ───────┬──────   ──────┬──────
         template name    pod name
-
-Pod удалён → новый pod с ТЕМ ЖЕ именем → ТОТ ЖЕ PVC
-  → state сохраняется при пересоздании
-
-Labels добавляемые controller'ом:
-  controller-revision-hash: quiz-7576f64fbc    (как pod-template-hash)
-  statefulset.kubernetes.io/pod-name: quiz-0   (для per-pod Service)
-
-ownerReferences → StatefulSet напрямую (не через ReplicaSet)
 ```
+
+- **Pod удалён** → новый pod с **тем же именем** → **тот же PVC**
+  - **state сохраняется** при пересоздании
+
+#### Labels добавляемые controller'ом
+
+- **controller-revision-hash**: `quiz-7576f64fbc` (как pod-template-hash)
+- **statefulset.kubernetes.io/pod-name**: `quiz-0` (для **per-pod Service**)
+
+> **ownerReferences** → StatefulSet **напрямую** (не через ReplicaSet)
+
 ^sts-naming
 
 ## Scaling
 
-```
-Scale up:
-  → новые pod'ы + новые PVC создаются
-  → ordinal numbers продолжаются (quiz-3, quiz-4...)
+#### Scale up
 
-Scale down:
-  → pod с НАИБОЛЬШИМ ordinal удаляется первым
-  → PVC по умолчанию СОХРАНЯЮТСЯ (Retain)
-  → scale up обратно → pod переподключается к тому же PVC
+- Новые **pod'ы** + новые **PVC** создаются
+- **Ordinal numbers** продолжаются (quiz-3, quiz-4...)
 
-Scale down to 0:
-  → все pod'ы удалены, PVC остаются
-  → scale up → все PVC переподключаются
+#### Scale down
 
-⚠️ Stateful приложения могут требовать доп. конфигурации при scaling
-   (например, MongoDB replica set reconfiguration)
-```
+- Pod с **наибольшим ordinal** удаляется первым
+- PVC по умолчанию **сохраняются** (**Retain**)
+- Scale up обратно → pod **переподключается** к тому же PVC
+
+#### Scale down to 0
+
+- Все pod'ы удалены, **PVC остаются**
+- Scale up → все PVC **переподключаются**
+
+> **Stateful приложения** могут требовать доп. конфигурации при scaling (например, **MongoDB replica set reconfiguration**)
+
 ^sts-scaling
 
 ## PVC Retention Policy
@@ -146,57 +157,60 @@ spec:
   persistentVolumeClaimRetentionPolicy:
     whenScaled: Retain      # default: Retain. При scale down
     whenDeleted: Retain      # default: Retain. При удалении StatefulSet
-
-# whenScaled: Delete → PVC удаляются при scale down
-# whenDeleted: Delete → PVC удаляются при удалении StatefulSet
-
-⚠️ whenScaled: Delete + scale to 0 → все данные потеряны
-⚠️ Лучше: Retain + ручное удаление PVC
 ```
+
+- **whenScaled: Delete** → PVC удаляются при **scale down**
+- **whenDeleted: Delete** → PVC удаляются при **удалении StatefulSet**
+
+> **whenScaled: Delete** + scale to 0 → **все данные потеряны**
+> Лучше: **Retain** + ручное удаление PVC
+
 ^sts-pvc-retention
 
 ## Node Failure — At-Most-One Semantics
 
-```
-ReplicaSet при node failure:
-  → через несколько минут создаёт replacement pod на другой ноде
-  → возможно ДВА экземпляра с одинаковыми данными работают одновременно
+#### ReplicaSet при node failure
 
-StatefulSet при node failure:
-  → pod отмечается как Terminating
-  → НЕ создаёт replacement автоматически
-  → причина: at-most-one guarantee (два pod'а с одним identity = опасно)
+- Через несколько минут создаёт **replacement pod** на другой ноде
+- Возможно **два экземпляра** с одинаковыми данными работают одновременно
 
-Ручное вмешательство:
-  1. Убедиться что нода действительно failed
-  2. kubectl delete pod quiz-1 --force --grace-period 0
-  3. Новый pod создаётся controller'ом
-  4. Если PV local → pod не может быть scheduled на другую ноду
-     → удалить PVC + pod → новый PVC + новый PV
-```
+#### StatefulSet при node failure
+
+- Pod отмечается как **Terminating**
+- **НЕ создаёт replacement** автоматически
+- Причина: **at-most-one guarantee** (два pod'а с одним identity = опасно)
+
+#### Ручное вмешательство
+
+1. Убедиться что нода действительно **failed**
+2. `kubectl delete pod quiz-1 --force --grace-period 0`
+3. Новый pod создаётся **controller'ом**
+4. Если **PV local** → pod не может быть scheduled на другую ноду
+   - Удалить **PVC + pod** → новый PVC + новый PV
+
 ^sts-node-failure
 
 ## Pod Management Policy
 
-```
-OrderedReady (default):
-  Scale up:   quiz-0 → ready → quiz-1 → ready → quiz-2
-  Scale down: quiz-2 → terminated → quiz-1 → terminated → quiz-0
-  minReadySeconds: задержка между pod'ами
+#### OrderedReady (default)
 
-  ⚠️ Если pod-0 не ready → pod-1 НИКОГДА не создастся (deadlock!)
-  ⚠️ Template update НЕ применяется к unready pod'ам
-  ⚠️ Scale down блокируется если не все pod'ы ready
-  ⚠️ НЕ применяется при удалении StatefulSet
+- **Scale up:** quiz-0 → ready → quiz-1 → ready → quiz-2
+- **Scale down:** quiz-2 → terminated → quiz-1 → terminated → quiz-0
+- **minReadySeconds:** задержка между pod'ами
 
-Parallel:
-  Scale up:   quiz-0, quiz-1, quiz-2 — все одновременно
-  Scale down: все удаляются одновременно
-  → быстрее, но не все приложения поддерживают
+> Если pod-0 **не ready** → pod-1 **никогда не создастся** (deadlock!)
+> **Template update** НЕ применяется к **unready** pod'ам
+> **Scale down** блокируется если не все pod'ы ready
+> НЕ применяется при **удалении** StatefulSet
 
-⚠️ podManagementPolicy — immutable
-   → чтобы изменить: delete sts --cascade=orphan → recreate
-```
+#### Parallel
+
+- **Scale up:** quiz-0, quiz-1, quiz-2 — **все одновременно**
+- **Scale down:** все удаляются одновременно
+- Быстрее, но **не все приложения поддерживают**
+
+> **podManagementPolicy** — **immutable**. Чтобы изменить: `delete sts --cascade=orphan` → recreate
+
 ^sts-pod-management
 
 ## Полезные команды
@@ -210,6 +224,7 @@ kubectl scale sts quiz --replicas 5
 kubectl get pvc -l app=quiz            # PVC StatefulSet'а
 kubectl delete pod quiz-1 --force --grace-period 0  # при node failure
 ```
+
 ^sts-commands
 
 ## Связь

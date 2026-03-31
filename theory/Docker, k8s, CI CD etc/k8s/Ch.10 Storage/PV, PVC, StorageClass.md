@@ -1,8 +1,10 @@
-- **PersistentVolume (PV)** — объект K8s, представляющий storage volume (local или network). **PersistentVolumeClaim (PVC)** — "заявка" пользователя на storage. Pod → PVC → PV → underlying storage
-- **StorageClass** — определяет КАК провизионить volumes (provisioner + parameters). Кластер может иметь несколько классов (standard, premium, local). Один — default
-- **Dynamic provisioning** (default): создал PVC → provisioner автоматически создал PV + underlying storage. **Static**: admin заранее создал PV, K8s матчит с PVC
-- **Access modes:** RWOP (один pod), RWO (одна нода, много pod'ов), RWX (много нод), ROX (много нод, read-only)
-- **Reclaim policy:** Delete (dynamic default — PV и storage удаляются с PVC), Retain (static default — PV остаётся, admin чистит вручную)
+- При рестарте контейнера файловая система **теряется**. Чтобы данные пережили рестарт — нужен **volume**, который живёт отдельно от контейнера
+- **PersistentVolume (PV)** — кусок реального диска (локальный SSD, сетевой диск в облаке). Живёт независимо от Pod'а — Pod умер, диск и данные остались
+- **PersistentVolumeClaim (PVC)** — заявка разработчика: "мне нужно 10Gi SSD". Kubernetes находит или создаёт подходящий PV и привязывает. Цепочка: Pod → PVC → PV → реальный диск
+- **StorageClass** — шаблон для создания дисков. Описывает ЧТО создавать (HDD/SSD, какой провайдер). Кластер может иметь несколько классов (standard = HDD, premium = SSD). Разработчик указывает имя класса в PVC, Kubernetes создаёт диск нужного типа. Один класс — default
+- **Dynamic provisioning** (default): создал PVC → Kubernetes автоматически создал PV + реальный диск. **Static**: admin заранее создал диск и PV вручную, K8s матчит с PVC
+- **Access modes:** RWOP (ReadWriteOncePod — один pod), RWO (ReadWriteOnce — одна нода, много pod'ов), RWX (ReadWriteMany — много нод), ROX (ReadOnlyMany — много нод, read-only)
+- **Reclaim policy:** Delete (dynamic default — PV и диск удаляются вместе с PVC, данные потеряны), Retain (static default — PV и диск остаются, admin чистит вручную)
 
 ---
 
@@ -11,10 +13,10 @@
 ```
 Pod                PVC               PV              Storage
 ┌──────────┐      ┌──────────┐     ┌──────────┐    ┌──────────┐
-│ volumes:  │      │ spec:    │     │ spec:    │    │          │
-│  - pvc:   │─────▶│  storage │────▶│  capacity│───▶│ NFS/EBS/ │
-│   name: X │ ref  │  access  │bind │  access  │    │ GCE PD / │
-│           │      │  class   │     │  local   │    │ local    │
+│ volumes: │      │ spec:    │     │ spec:    │    │          │
+│  - pvc:  │─────▶│  storage │────▶│  capacity│───▶│ NFS/EBS/ │
+│   name: X│ ref  │  access  │bind │  access  │    │ GCE PD / │
+│          │      │  class   │     │  local   │    │ local    │
 └──────────┘      └──────────┘     └──────────┘    └──────────┘
   namespaced        namespaced      cluster-scoped
 
@@ -22,6 +24,7 @@ Pod ссылается на PVC по имени
 PVC ссылается на StorageClass по имени
 PV создаётся автоматически (dynamic) или заранее (static)
 ```
+
 ^pv-relationship
 
 ## PersistentVolumeClaim (PVC)
@@ -43,6 +46,7 @@ spec:
   #   kind: PersistentVolumeClaim
   #   name: source-pvc
 ```
+
 ^pv-pvc-manifest
 
 ## Использование PVC в Pod'е
@@ -60,6 +64,7 @@ spec:
     - name: data
       mountPath: /data/db
 ```
+
 ^pv-pod-usage
 
 ## Access Modes
@@ -79,6 +84,7 @@ ReadOnlyMany      ROX     Много нод (Read-only)
 ⚠️ ReadOnlyOnce не существует
   → используй RWO volume с readOnly: true в pod manifest
 ```
+
 ^pv-access-modes
 
 ## Dynamic vs Static Provisioning
@@ -99,6 +105,7 @@ Static:
   5. Удаление PVC → PV переходит в Released (reclaim policy: Retain)
      → admin должен вручную очистить и пересоздать PV
 ```
+
 ^pv-provisioning
 
 ## StorageClass
@@ -117,6 +124,7 @@ reclaimPolicy: Delete                   # Delete или Retain
 volumeBindingMode: WaitForFirstConsumer # когда создавать PV
 allowVolumeExpansion: true              # можно ли увеличивать size
 ```
+
 ^pv-storageclass
 
 ```
@@ -128,6 +136,7 @@ volumeBindingMode:
   WaitForFirstConsumer → PV создаётся когда первый Pod использует PVC
                         (нужен для local volumes и topology-aware storage)
 ```
+
 ^pv-binding-mode
 
 ## Reclaim Policy
@@ -147,6 +156,7 @@ Retain (default для static):
 ⚠️ Если PV в Released и меняешь policy с Retain на Delete → PV и storage удалятся
 💡 Перед удалением PVC с policy Delete → смени на Retain чтобы сохранить данные
 ```
+
 ^pv-reclaim-policy
 
 ## Lifecycle PV
@@ -166,6 +176,7 @@ PVC statuses:
 Удаление PV/PVC пока pod использует → блокируется (Terminating)
 K8s НИКОГДА не убивает pod'ы из-за удаления PV/PVC
 ```
+
 ^pv-lifecycle
 
 ## Local PersistentVolumes
@@ -190,6 +201,7 @@ spec:
           operator: In
           values: [worker-1]
 ```
+
 ^pv-local
 
 ```
@@ -198,6 +210,7 @@ Local PV vs hostPath volume:
   hostPath:    pod может попасть на любую ноду, доступ к произвольным путям
   → Local PV безопаснее и предсказуемее
 ```
+
 ^pv-local-vs-hostpath
 
 ## Resize, Snapshots, Cloning
@@ -223,6 +236,7 @@ Ephemeral volumes:
   → PVC создаётся и удаляется ВМЕСТЕ с pod'ом
   → как emptyDir, но с фиксированным размером и фичами PV
 ```
+
 ^pv-management
 
 ## CSI Drivers
@@ -241,6 +255,7 @@ kubectl get sc                # StorageClasses ссылаются на CSI drive
   disk.csi.azure.com          → Azure Disk
   nfs.csi.k8s.io              → NFS
 ```
+
 ^pv-csi
 
 ## Полезные команды
@@ -252,9 +267,11 @@ kubectl get sc                     # список StorageClasses
 kubectl describe pvc my-data       # детали + conditions + events
 kubectl get pvc -o wide            # расширенный вывод
 ```
+
 ^pv-commands
 
 ## Связь
+
 - [[ConfigMaps]] — configMap volume для конфиг-файлов (Ch.8)
 - [[Secrets и Downward API]] — secret volume для чувствительных файлов (Ch.8)
 - [[StatefulSet — концепт]] — volumeClaimTemplates для stateful приложений (Ch.16)

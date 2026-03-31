@@ -1,3 +1,4 @@
+- Зачем разработчику: позволяют добавить кастомные проверки и модификации в кластере. Например: "все Pod'ы обязаны иметь resource limits", "все образы только из internal registry", "автоматически inject'ить sidecar в каждый Pod"
 - **Admission Controllers** — плагины API server'а, перехватывают запросы ПОСЛЕ аутентификации/авторизации, но ДО сохранения в etcd. Могут валидировать, мутировать или отклонять объекты
 - Два типа: **Mutating** (изменяют объект, выполняются первыми) и **Validating** (только проверяют, выполняются вторыми). Один webhook может быть и тем, и другим
 - Встроенные admission controllers: LimitRanger (default requests/limits), ResourceQuota, NamespaceLifecycle, ServiceAccount, PodSecurity и др. — включены по умолчанию
@@ -36,22 +37,22 @@ etcd → объект сохранён
 
 ## Встроенные Admission Controllers
 
-```
-Включены по умолчанию (--enable-admission-plugins):
+Включены по умолчанию (`--enable-admission-plugins`):
 
-NamespaceLifecycle     — запрещает создание объектов в удаляемом namespace
-LimitRanger            — применяет default requests/limits из LimitRange
-ServiceAccount         — подставляет default ServiceAccount
-ResourceQuota          — проверяет лимиты ResourceQuota
-DefaultStorageClass    — добавляет default StorageClass к PVC
-PodSecurity            — проверяет Pod Security Standards
-                         (заменил PodSecurityPolicy)
-MutatingAdmissionWebhook   — вызывает пользовательские mutating webhooks
-ValidatingAdmissionWebhook — вызывает пользовательские validating webhooks
+| Controller | Назначение |
+|---|---|
+| **NamespaceLifecycle** | Запрещает создание объектов в удаляемом namespace |
+| **LimitRanger** | Применяет default **requests/limits** из LimitRange |
+| **ServiceAccount** | Подставляет default **ServiceAccount** |
+| **ResourceQuota** | Проверяет лимиты **ResourceQuota** |
+| **DefaultStorageClass** | Добавляет default **StorageClass** к PVC |
+| **PodSecurity** | Проверяет **Pod Security Standards** (заменил PodSecurityPolicy) |
+| **MutatingAdmissionWebhook** | Вызывает пользовательские **mutating** webhooks |
+| **ValidatingAdmissionWebhook** | Вызывает пользовательские **validating** webhooks |
 
-Порядок выполнения определён в коде API server'а.
-Список: kube-apiserver --help | grep enable-admission-plugins
-```
+> Порядок выполнения определён в коде **API server'а**.
+> Список: `kube-apiserver --help | grep enable-admission-plugins`
+
 ^adm-builtin
 
 ## Dynamic Admission Webhooks
@@ -83,49 +84,56 @@ webhooks:
   failurePolicy: Fail               # Fail или Ignore
   timeoutSeconds: 5
 ```
+
 ^adm-webhook-manifest
 
-```
-Как работает:
-  1. Ты создаёшь MutatingWebhookConfiguration / ValidatingWebhookConfiguration
-  2. API server перехватывает matching запросы
-  3. Отправляет AdmissionReview (JSON) на webhook endpoint
-  4. Webhook отвечает: allowed: true/false + patches (для mutating)
-  5. API server применяет patches или отклоняет запрос
+#### Как работает
 
-Webhook endpoint:
-  → обычно Pod + Service в кластере
-  → ОБЯЗАТЕЛЬНО HTTPS (TLS)
-  → должен отвечать быстро (timeoutSeconds, default 10s)
+1. Ты создаёшь **MutatingWebhookConfiguration** / **ValidatingWebhookConfiguration**
+2. **API server** перехватывает matching запросы
+3. Отправляет **AdmissionReview** (JSON) на webhook endpoint
+4. Webhook отвечает: **allowed: true/false** + **patches** (для mutating)
+5. API server применяет patches или отклоняет запрос
 
-failurePolicy:
-  Fail   → если webhook недоступен → запрос отклоняется (безопаснее)
-  Ignore → если webhook недоступен → запрос проходит (доступность важнее)
-```
+#### Webhook endpoint
+
+- Обычно **Pod + Service** в кластере
+- **ОБЯЗАТЕЛЬНО HTTPS (TLS)**
+- Должен отвечать быстро (**timeoutSeconds**, default 10s)
+
+#### failurePolicy
+
+| Значение | Поведение |
+|---|---|
+| **Fail** | Если webhook недоступен — запрос **отклоняется** (безопаснее) |
+| **Ignore** | Если webhook недоступен — запрос **проходит** (доступность важнее) |
+
 ^adm-webhook-flow
 
 ## Примеры использования
 
-```
-Mutating webhooks:
-  → Istio sidecar injection (добавляет envoy container в pod)
-  → Добавление default labels/annotations
-  → Inject environment variables
-  → Cert-manager: inject TLS certificates
+#### Mutating webhooks
 
-Validating webhooks:
-  → OPA/Gatekeeper: policy enforcement
-    ("все images должны быть из internal registry")
-    ("pod'ы должны иметь resource limits")
-    ("запрещены privileged containers")
-  → Kyverno: policy engine (альтернатива OPA)
-  → Custom бизнес-правила
+- **Istio sidecar injection** — добавляет envoy container в pod
+- Добавление **default labels/annotations**
+- **Inject environment variables**
+- **Cert-manager** — inject TLS certificates
 
-ValidatingAdmissionPolicy (K8s 1.30+ stable):
-  → встроенная альтернатива validating webhooks
-  → CEL expressions прямо в K8s объекте
-  → не нужен внешний webhook server
-```
+#### Validating webhooks
+
+- **OPA/Gatekeeper** — policy enforcement
+  - *"все images должны быть из internal registry"*
+  - *"pod'ы должны иметь resource limits"*
+  - *"запрещены privileged containers"*
+- **Kyverno** — policy engine (альтернатива OPA)
+- **Custom** бизнес-правила
+
+#### ValidatingAdmissionPolicy (K8s 1.30+ stable)
+
+- **Встроенная альтернатива** validating webhooks
+- **CEL expressions** прямо в K8s объекте
+- Не нужен внешний webhook server
+
 ^adm-use-cases
 
 ```yaml
@@ -144,6 +152,7 @@ spec:
   - expression: "has(object.metadata.labels.team)"
     message: "All deployments must have a 'team' label"
 ```
+
 ^adm-cel-policy
 
 ## Связь

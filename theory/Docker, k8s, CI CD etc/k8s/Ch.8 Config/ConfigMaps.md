@@ -1,4 +1,4 @@
-- **ConfigMap** = объект K8s для хранения **несекретной** конфигурации в формате key-value. Отделяет конфиг от pod manifest → один manifest для всех окружений
+- **ConfigMap** = key-value хранилище для несекретной конфигурации. Зачем: один и тот же образ для dev и prod, разница только в конфиге. Dev ConfigMap: DB_HOST=localhost. Prod ConfigMap: DB_HOST=prod-db. Один manifest, разные ConfigMap'ы для разных окружений
 - Два способа использования: **env vars** (valueFrom.configMapKeyRef или envFrom) и **volume** (файлы в контейнере, Ch.9)
 - Создание: `kubectl create configmap` (--from-literal, --from-file, --from-env-file) или YAML manifest
 - При обновлении ConfigMap **env vars НЕ обновляются** в запущенных контейнерах (только после restart). Файлы в configMap volume — обновляются автоматически
@@ -13,7 +13,7 @@
 ┌──────────────┐                  ┌──────────────┐
 │ Pod manifest │                  │ Pod manifest │ ← одинаковый
 │ env:         │                  │ envFrom:     │   для всех env
-│   DB=prod-db │ ← hardcoded     │   cm: config │
+│   DB=prod-db │ ← hardcoded      │   cm: config │
 └──────────────┘                  └──────────────┘
 Разный manifest                         │
 для каждого env                    ┌─────┴─────┐
@@ -112,21 +112,22 @@ containers:
 
 ## Обновление ConfigMap
 
-```
-Обновить: kubectl edit cm app-config или kubectl apply -f cm.yaml
+Обновить: `kubectl edit cm app-config` или `kubectl apply -f cm.yaml`
 
-Что происходит:
-  env vars в запущенных контейнерах → НЕ обновляются
-    → новые значения только после restart контейнера
-    → разные pod'ы могут иметь разную конфигурацию!
+#### Что происходит
 
-  configMap volume (файлы) → обновляются автоматически (delay ~1 min)
-    → приложение должно следить за изменениями файлов
+- **env vars** в запущенных контейнерах → **НЕ обновляются**
+    - новые значения только после **restart** контейнера
+    - разные pod'ы могут иметь **разную конфигурацию**!
+- **configMap volume** (файлы) → **обновляются автоматически** (delay ~1 min)
+    - приложение должно **следить за изменениями** файлов
 
-immutable: true → запрещает изменения data/binaryData
-  → безопаснее (все pod'ы одинаковы)
-  → производительнее (kubelet не опрашивает API server)
-```
+#### immutable: true
+
+> Запрещает изменения **data** / **binaryData**
+
+- **Безопаснее** — все pod'ы гарантированно одинаковы
+- **Производительнее** — kubelet не опрашивает API server
 ^cm-update
 
 ## Связь

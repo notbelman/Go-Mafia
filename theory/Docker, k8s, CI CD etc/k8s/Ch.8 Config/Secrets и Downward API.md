@@ -1,49 +1,48 @@
 - **Secret** = ConfigMap для **чувствительных данных**. Та же структура, но: values Base64-encoded в data field, хранение в памяти worker nodes, доступ через RBAC
 - Типы: Opaque (generic), kubernetes.io/tls (сертификат+ключ), kubernetes.io/dockerconfigjson (pull credentials), kubernetes.io/basic-auth, kubernetes.io/ssh-auth
 - **Лучше монтировать как файлы** (secret volume), а не env vars. Env vars могут утечь через логи, error reports, child processes
-- **Downward API** — инъекция metadata pod'а (имя, IP, namespace, node name) в env vars или файлы. Не REST endpoint, а механизм проброса полей из Pod object
-- Secrets **НЕ зашифрованы** по умолчанию в etcd (только Base64-encoded). Для реальной безопасности: encryption at rest + RBAC + external tools (Vault)
+- **Downward API** — инъекция metadata pod'а (имя, IP, namespace, node name) в env vars или файлы. Не REST endpoint, а механизм проброса полей из Pod object. Нужен когда приложению нужно знать своё имя/IP/namespace без обращения к API Server
+- ⚠️ Secrets **НЕ зашифрованы** по умолчанию — Base64 это НЕ шифрование, любой может декодировать. Для реальной безопасности: encryption at rest в etcd + RBAC + external tools (HashiCorp Vault). Это частый вопрос на собесе
 
 ---
 
 ## Secret vs ConfigMap
 
-```
-                    ConfigMap              Secret
-Назначение          Несекретный конфиг     Пароли, токены, ключи
-data field          Plain text             Base64-encoded
-stringData          Нет                    Есть (write-only, для удобства)
-binaryData          Есть                   Нет (всё в data, всё Base64)
-type field          Нет                    Есть (Opaque, tls, docker...)
-Хранение на ноде    Диск                   Только в памяти (tmpfs)
-immutable           Есть                   Есть
-Max size            ~1MB                   ~1MB
-```
+| Параметр | ConfigMap | Secret |
+|---|---|---|
+| **Назначение** | Несекретный конфиг | **Пароли, токены, ключи** |
+| **data field** | Plain text | **Base64-encoded** |
+| **stringData** | Нет | Есть (**write-only**, для удобства) |
+| **binaryData** | Есть | Нет (всё в data, всё Base64) |
+| **type field** | Нет | Есть (Opaque, tls, docker...) |
+| **Хранение на ноде** | Диск | **Только в памяти (tmpfs)** |
+| **immutable** | Есть | Есть |
+| **Max size** | ~1MB | ~1MB |
+
 ^sec-vs-cm
 
 ## Типы Secrets
 
-```
-Opaque (default):
-  Произвольные key-value пары. Создаётся при type="" или "generic"
+#### Opaque (default)
+- Произвольные **key-value пары**. Создаётся при `type=""` или `"generic"`
 
-kubernetes.io/tls:
-  Обязательные ключи: tls.crt, tls.key
-  Для TLS сертификатов (Ingress, Envoy, mTLS)
+#### kubernetes.io/tls
+- **Обязательные ключи:** `tls.crt`, `tls.key`
+- Для **TLS сертификатов** (Ingress, Envoy, mTLS)
 
-kubernetes.io/dockerconfigjson:
-  Обязательный ключ: .dockerconfigjson
-  Для pull из приватных container registry (imagePullSecrets)
+#### kubernetes.io/dockerconfigjson
+- **Обязательный ключ:** `.dockerconfigjson`
+- Для **pull из приватных container registry** (`imagePullSecrets`)
 
-kubernetes.io/basic-auth:
-  Обязательные ключи: username, password
+#### kubernetes.io/basic-auth
+- **Обязательные ключи:** `username`, `password`
 
-kubernetes.io/ssh-auth:
-  Обязательный ключ: ssh-privatekey
+#### kubernetes.io/ssh-auth
+- **Обязательный ключ:** `ssh-privatekey`
 
-kubernetes.io/service-account-token:
-  Автоматически создаётся для ServiceAccount
-```
+#### kubernetes.io/service-account-token
+- **Автоматически** создаётся для **ServiceAccount**
+
 ^sec-types
 
 ## Создание Secrets
@@ -70,6 +69,7 @@ kubectl create secret generic db-creds \
   --from-literal password=s3cr3t \
   --dry-run=client -o yaml > secret.yaml
 ```
+
 ^sec-create
 
 ## YAML manifest
@@ -85,6 +85,7 @@ data:                                # Base64-encoded (обязательно)
 stringData:                          # plain text (write-only, удобнее)
   username: admin                    # при чтении окажется в data как Base64
 ```
+
 ^sec-yaml
 
 ## Использование в Pod'е
@@ -111,40 +112,41 @@ spec:
   containers:
   - image: registry.example.com/my-app:1.0
 ```
+
 ^sec-usage
 
 ## ⚠️ Безопасность Secrets
 
-```
-Secrets НЕ зашифрованы по умолчанию:
-  → Base64 ≠ encryption (любой может декодировать)
-  → etcd хранит Secrets в plain text (если encryption at rest не включен)
-  → RBAC может быть misconfigured → доступ не тем пользователям
+#### Secrets НЕ зашифрованы по умолчанию
 
-Env vars — рискованно:
-  → приложение может вывести env vars в лог при старте
-  → child processes наследуют env vars
-  → error reports могут содержать env dump
+> **Base64 ≠ encryption** — любой может декодировать
 
-Рекомендации:
-  ✅ Монтировать как файлы (secret volume) вместо env vars
-  ✅ Включить encryption at rest в etcd
-  ✅ Настроить RBAC: минимальные права на Secrets
-  ✅ Использовать external secret managers (HashiCorp Vault, AWS Secrets Manager)
-  ✅ Автоматическая ротация секретов
-  ❌ НЕ хранить Secret YAML в git (используй sealed-secrets или external-secrets)
-```
+- **etcd** хранит Secrets в **plain text** (если encryption at rest не включен)
+- **RBAC** может быть misconfigured — доступ не тем пользователям
+
+#### Env vars — рискованно
+
+- Приложение может вывести env vars в **лог при старте**
+- **Child processes** наследуют env vars
+- **Error reports** могут содержать env dump
+
+#### Рекомендации
+
+- **Монтировать как файлы** (secret volume) вместо env vars
+- Включить **encryption at rest** в etcd
+- Настроить **RBAC**: минимальные права на Secrets
+- Использовать **external secret managers** (HashiCorp Vault, AWS Secrets Manager)
+- **Автоматическая ротация** секретов
+- **НЕ хранить Secret YAML в git** (использовать sealed-secrets или external-secrets)
+
 ^sec-security
 
 ## Downward API
 
-```
-Инъекция metadata из Pod object → в контейнер
-Не REST endpoint, а проброс полей через env vars или файлы
+**Инъекция metadata** из Pod object в контейнер. **Не REST endpoint**, а проброс полей через **env vars** или **файлы**.
 
-Зачем: приложение хочет знать имя pod'а, IP, ноду, namespace
-→ не хардкодить, а получить из K8s автоматически
-```
+> **Зачем:** приложение хочет знать имя pod'а, IP, ноду, namespace — не хардкодить, а получить из K8s **автоматически**
+
 ^da-overview
 
 ### Доступные поля
@@ -184,24 +186,25 @@ env:
       resource: limits.memory
       divisor: 1Mi                      # единица: 1, 1k, 1Ki, 1M, 1Mi...
 ```
+
 ^da-fields
 
 ### Что доступно через fieldRef
 
-```
-Поле                          env var    volume
-metadata.name                 ✅         ✅
-metadata.namespace            ✅         ✅
-metadata.uid                  ✅         ✅
-metadata.labels               ❌         ✅  (все labels)
-metadata.labels['key']        ✅         ✅  (конкретный label)
-metadata.annotations          ❌         ✅  (все annotations)
-metadata.annotations['key']   ✅         ✅  (конкретная annotation)
-spec.nodeName                 ✅         ❌
-spec.serviceAccountName       ✅         ❌
-status.podIP / podIPs         ✅         ❌
-status.hostIP / hostIPs       ✅         ❌
-```
+| Поле | env var | volume | Примечание |
+|---|---|---|---|
+| **metadata.name** | yes | yes | |
+| **metadata.namespace** | yes | yes | |
+| **metadata.uid** | yes | yes | |
+| **metadata.labels** | no | yes | все labels |
+| **metadata.labels['key']** | yes | yes | конкретный label |
+| **metadata.annotations** | no | yes | все annotations |
+| **metadata.annotations['key']** | yes | yes | конкретная annotation |
+| **spec.nodeName** | yes | no | |
+| **spec.serviceAccountName** | yes | no | |
+| **status.podIP / podIPs** | yes | no | |
+| **status.hostIP / hostIPs** | yes | no | |
+
 ^da-fields-table
 
 ## Связь

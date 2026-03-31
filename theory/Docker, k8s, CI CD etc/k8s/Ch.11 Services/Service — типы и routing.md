@@ -1,27 +1,29 @@
-- **Service** = stable IP + load balancer перед группой Pod'ов. Pod'ы эфемерны (IP меняется), Service — постоянный. Связь с pod'ами через **label selector**
+- **Pod'ы эфемерны** — при пересоздании получают новый IP. Клиент не может хардкодить IP Pod'а. **Service** решает это: стабильный IP + DNS имя + load balancing перед группой Pod'ов. Pod'ы приходят и уходят, Service остаётся. Связь с Pod'ами через **label selector**
 - Типы: **ClusterIP** (внутри кластера), **NodePort** (ClusterIP + порт на каждой ноде), **LoadBalancer** (NodePort + внешний LB), **ExternalName** (CNAME alias)
-- Pod'ы общаются через **flat NAT-less network** — каждый pod видит каждый pod напрямую, без NAT, независимо от ноды
-- **externalTrafficPolicy:** Cluster (default — равномерно, но extra hop + source IP теряется) vs Local (без hop, сохраняет source IP, но неравномерное распределение)
-- **internalTrafficPolicy: Local** — трафик только к pod'ам на той же ноде. Topology-aware hints — предпочитать pod'ы в той же зоне
+- Pod'ы общаются через **flat NAT-less network** (все pod'ы в одной L3 сети, видят реальные IP друг друга) — каждый pod видит каждый pod напрямую, без NAT, независимо от ноды
+- **externalTrafficPolicy:** Cluster (default — равномерно, но extra network hop — трафик может уйти на pod на другой ноде + source IP теряется) vs Local (без hop, сохраняет source IP, но неравномерное распределение)
+- **internalTrafficPolicy: Local** — трафик только к pod'ам на той же ноде. Topology-aware hints — мягкая версия: предпочитать pod'ы в той же зоне, но не ограничиваться ими
 
 ---
 
 ## Зачем Service
 
+#### Проблема
+
+- **Pod'ы эфемерны** → IP меняется при пересоздании
+- **Horizontal scaling** → несколько pod'ов, каждый со своим IP
+- Клиент **не может хардкодить IP** pod'а
+
+#### Service решает
+
+- **Стабильный IP** (**ClusterIP**) + **DNS имя**
+- **Load balancing** между pod'ами
+- Pod'ы могут появляться/исчезать — **Service IP не меняется**
+
 ```
-Проблема:
-  Pod'ы эфемерны → IP меняется при пересоздании
-  Horizontal scaling → несколько pod'ов, каждый со своим IP
-  → клиент не может хардкодить IP pod'а
-
-Service решает:
-  → стабильный IP (ClusterIP) + DNS имя
-  → load balancing между pod'ами
-  → pod'ы могут появляться/исчезать — Service IP не меняется
-
         ┌──────────┐
-Client ──▶│  Service  │──▶ Pod A
-        │ 10.96.x.x │──▶ Pod B
+Client─▶│  Service │──▶ Pod A
+        │ 10.96.x.x│──▶ Pod B
         └──────────┘──▶ Pod C
 ```
 ^svc-why
@@ -45,17 +47,15 @@ metadata:
 ```
 ^svc-selector
 
+
 ## Типы Service
 
-```
-                    Доступность              Use case
-─────────────────────────────────────────────────────────────
-ClusterIP           Внутри кластера          Backend сервисы
-NodePort            ClusterIP + nodePort     Dev/test, bare metal
-                    на каждой ноде (30000-32767)
-LoadBalancer        NodePort + внешний LB    Production (cloud)
-ExternalName        CNAME в DNS              Alias для внешних сервисов
-```
+| Тип | Доступность | Use case |
+|---|---|---|
+| **ClusterIP** | Внутри кластера | Backend сервисы |
+| **NodePort** | ClusterIP + nodePort на каждой ноде (30000-32767) | Dev/test, bare metal |
+| **LoadBalancer** | NodePort + внешний LB | Production (cloud) |
+| **ExternalName** | CNAME в DNS | Alias для внешних сервисов |
 ^svc-types
 
 ### ClusterIP (default)
@@ -96,15 +96,17 @@ spec:
 ```
 ^svc-nodeport
 
-```
-Клиент → <любая_нода_IP>:30080 → Service → Pod (на любой ноде)
 
+**Клиент** → `<любая_нода_IP>:30080` → **Service** → **Pod** (на любой ноде)
+
+```
   Node A (:30080) ──┐
                     ├──▶ Service ──▶ Pod (может быть на Node A или B)
   Node B (:30080) ──┘
-
-Не важно на какую ноду пришёл запрос — K8s форвардит на любой pod
 ```
+
+> **Не важно** на какую ноду пришёл запрос — K8s форвардит на **любой pod**
+
 ^svc-nodeport-flow
 
 ### LoadBalancer
@@ -126,12 +128,12 @@ spec:
 ```
 ^svc-loadbalancer
 
-```
-Client → Load Balancer (34.56.78.90:80) → Node:30080 → Service → Pod
 
-Если кластер не поддерживает LB → EXTERNAL-IP = <pending>
-Bare metal → установить MetalLB
-```
+**Client** → **Load Balancer** (`34.56.78.90:80`) → **Node**`:30080` → **Service** → **Pod**
+
+> Если кластер **не поддерживает LB** → `EXTERNAL-IP = <pending>`
+> **Bare metal** → установить **MetalLB**
+
 ^svc-lb-flow
 
 ### ExternalName
@@ -140,29 +142,29 @@ Bare metal → установить MetalLB
 spec:
   type: ExternalName
   externalName: worldtimeapi.org    # CNAME record в DNS
-
-# Нет ClusterIP, нет endpoints
-# Просто DNS alias: time-api.ns.svc.cluster.local → worldtimeapi.org
-# Полезно: мигрировать внешний сервис под K8s без изменения клиентов
 ```
+
+- **Нет ClusterIP**, нет endpoints
+- Просто **DNS alias**: `time-api.ns.svc.cluster.local` → `worldtimeapi.org`
+- **Полезно**: мигрировать внешний сервис под K8s **без изменения клиентов**
+
 ^svc-externalname
 
 ## External Traffic Policy
 
-```
-externalTrafficPolicy: Cluster (default)
-  ✅ Равномерное распределение между pod'ами
-  ❌ Extra network hop (нода → другая нода)
-  ❌ Source IP заменяется на IP ноды (SNAT)
+#### externalTrafficPolicy: Cluster (default)
 
-externalTrafficPolicy: Local
-  ✅ Нет лишних hop'ов
-  ✅ Source IP клиента сохраняется
-  ❌ Неравномерное распределение
-     (нода с 1 pod'ом получает столько же трафика как нода с 3)
-  ❌ Если на ноде нет pod'ов → connection refused
-     (решение: healthCheckNodePort для LB)
-```
+- ✅ **Равномерное распределение** между pod'ами
+- ❌ **Extra network hop** (нода → другая нода)
+- ❌ **Source IP** заменяется на IP ноды (**SNAT**)
+
+#### externalTrafficPolicy: Local
+
+- ✅ **Нет лишних hop'ов**
+- ✅ **Source IP** клиента **сохраняется**
+- ❌ **Неравномерное распределение** (нода с 1 pod'ом получает столько же трафика как нода с 3)
+- ❌ Если на ноде **нет pod'ов** → `connection refused` (решение: **healthCheckNodePort** для LB)
+
 ^svc-external-traffic
 
 ```
@@ -173,15 +175,17 @@ Cluster policy:                    Local policy:
 ```
 ^svc-traffic-diagram
 
+
 ## Internal Traffic Policy
 
 ```yaml
 spec:
   internalTrafficPolicy: Local     # трафик только к pod'ам на той же ноде
-
-# Если на ноде нет pod'ов сервиса → connection refused
-# Use case: per-node daemon'ы, node-local agents
 ```
+
+- Если на ноде **нет pod'ов** сервиса → `connection refused`
+- **Use case**: per-node daemon'ы, **node-local agents**
+
 ^svc-internal-traffic
 
 ## Session Affinity
@@ -192,9 +196,10 @@ spec:
   sessionAffinityConfig:
     clientIP:
       timeoutSeconds: 10800       # 3 часа default
-
-# Только None или ClientIP (нет cookie-based — Service работает на L4, не L7)
 ```
+
+> Только **None** или **ClientIP** (нет cookie-based — Service работает на **L4**, не **L7**)
+
 ^svc-session-affinity
 
 ## Полезные команды
@@ -208,6 +213,7 @@ kubectl edit svc quiz                  # редактировать Service
 kubectl port-forward svc/kiada 8080    # проксировать (для dev)
 ```
 ^svc-commands
+
 
 ## Связь
 - [[Service — DNS, endpoints, readiness]] — DNS, Endpoints, headless, readiness probes (Ch.11)

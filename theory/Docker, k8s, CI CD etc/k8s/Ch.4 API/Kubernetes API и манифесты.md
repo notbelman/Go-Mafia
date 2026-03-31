@@ -1,28 +1,29 @@
 - Всё в K8s — **объект в API**. Pods, Deployments, Services, Nodes — всё управляется через REST API (CRUD по HTTP)
 - Манифест объекта = 4 секции: **apiVersion/kind** (тип), **metadata** (имя, labels), **spec** (желаемое состояние), **status** (текущее состояние)
-- **Ты пишешь spec** → контроллер читает spec, выполняет действия, **пишет status**. Это reconciliation loop
+- **Ты пишешь spec** → контроллер читает spec, выполняет действия, **пишет status**. Это reconciliation loop (бесконечный цикл: сравнить desired vs actual → исправить разницу)
 - `kubectl explain <kind>` — встроенная документация по полям. `kubectl explain pod.spec.containers` — drill down
-- **Conditions** — список ортогональных состояний объекта (Ready, MemoryPressure, DiskPressure). Каждое: type + status (True/False/Unknown) + reason + message
+- **Conditions** — список независимых друг от друга состояний объекта (Ready, MemoryPressure, DiskPressure). Каждое: type + status (True/False/Unknown) + reason + message
 
 ---
 
 ## Всё — объект в API
 
-```
-Kubernetes API (REST, HTTP)
+#### Kubernetes API (REST, HTTP)
 
-  POST   /apis/apps/v1/namespaces/default/deployments    → создать
-  GET    /apis/apps/v1/namespaces/default/deployments/x  → прочитать
-  PUT    /apis/apps/v1/namespaces/default/deployments/x  → обновить
-  DELETE /apis/apps/v1/namespaces/default/deployments/x  → удалить
+| Метод      | URL                                                       | Действие    |
+| ---------- | --------------------------------------------------------- | ----------- |
+| **POST**   | `/apis/apps/v1/namespaces/default/deployments`            | **создать** |
+| **GET**    | `/apis/apps/v1/namespaces/default/deployments/x`          | прочитать   |
+| **PUT**    | `/apis/apps/v1/namespaces/default/deployments/x`          | обновить    |
+| **DELETE** | `/apis/apps/v1/namespaces/default/deployments/x`          | удалить     |
 
-Всё что существует в кластере = объект в API:
-  Pod, Deployment, Service, ConfigMap, Secret,
-  Node, PersistentVolume, Ingress, Event...
+**Всё что существует в кластере** = объект в API:
+- **Pod**, **Deployment**, **Service**, **ConfigMap**, **Secret**
+- **Node**, **PersistentVolume**, **Ingress**, **Event**...
 
-kubectl — CLI клиент к API Server
-Все компоненты K8s (scheduler, controllers, kubelet) тоже работают через API
-```
+- **kubectl** — CLI клиент к **API Server**
+- **Все компоненты K8s** (scheduler, controllers, kubelet) тоже работают через API
+
 ^api-rest
 
 ## Структура манифеста (YAML)
@@ -50,20 +51,20 @@ status:                       # ── Actual state (контроллер пиш
 
 ## apiVersion и kind
 
-```
-apiVersion = API группа + версия:
+**apiVersion** = API группа + версия:
 
-  v1                → core группа (Pod, Service, ConfigMap, Node, Secret)
-  apps/v1           → Deployment, ReplicaSet, StatefulSet, DaemonSet
-  batch/v1          → Job, CronJob
-  networking.k8s.io/v1 → Ingress, NetworkPolicy
-  gateway.networking.k8s.io/v1 → Gateway, HTTPRoute
+| apiVersion                         | Объекты                                                |
+| ---------------------------------- | ------------------------------------------------------ |
+| **v1**                             | Pod, Service, ConfigMap, Node, Secret (**core** группа) |
+| **apps/v1**                        | Deployment, ReplicaSet, StatefulSet, DaemonSet         |
+| **batch/v1**                       | Job, CronJob                                           |
+| **networking.k8s.io/v1**           | Ingress, NetworkPolicy                                 |
+| **gateway.networking.k8s.io/v1**   | Gateway, HTTPRoute                                     |
 
-kind = тип объекта: Pod, Deployment, Service...
+**kind** = тип объекта: **Pod**, **Deployment**, **Service**...
 
-Один объект может быть доступен через несколько API версий
-(разные ресурсы → один и тот же объект)
-```
+> Один объект может быть доступен через **несколько API версий** (разные ресурсы → один и тот же объект)
+
 ^api-version-kind
 
 ## Spec vs Status — reconciliation loop
@@ -78,19 +79,19 @@ kind = тип объекта: Pod, Deployment, Service...
           │                        │  создаёт 3 Pod'а       │
           │                        ├───────────────────────▶│
           │                        │                        │
-          │                        │  пишет status           │
-          │                        │  (replicas: 3,          │
-          │  читаешь status        │   ready: 3)             │
+          │                        │  пишет status          │
+          │                        │  (replicas: 3,         │
+          │  читаешь status        │   ready: 3)            │
           │◀───────────────────────┤                        │
-
-Не все объекты имеют spec/status:
-  Event, ConfigMap, Secret — статические данные, нет контроллера
 ```
+
+> **Не все объекты имеют spec/status:** Event, ConfigMap, Secret — статические данные, нет контроллера
+
 ^api-spec-status
 
 ## Conditions — состояние объекта
 
-```
+```yaml
 status:
   conditions:
   - type: Ready
@@ -99,48 +100,54 @@ status:
     message: "kubelet is posting ready status"  # human-facing
     lastTransitionTime: "..."   # когда status изменился
     lastHeartbeatTime: "..."    # последний heartbeat
-
-Node conditions:
-  Ready            — нода готова принимать pod'ы
-  MemoryPressure   — заканчивается RAM
-  DiskPressure     — заканчивается диск
-  PIDPressure      — заканчиваются PID'ы
-
-Conditions ортогональны: каждый описывает НЕЗАВИСИМЫЙ аспект состояния
-→ лучше чем одно поле "status: healthy/unhealthy"
-→ легко расширять новыми conditions
 ```
+
+#### Node conditions
+
+| Condition            | Описание                          |
+| -------------------- | --------------------------------- |
+| **Ready**            | нода готова принимать pod'ы       |
+| **MemoryPressure**   | заканчивается RAM                 |
+| **DiskPressure**     | заканчивается диск                |
+| **PIDPressure**      | заканчиваются PID'ы              |
+
+**Conditions ортогональны:** каждый описывает **независимый** аспект состояния
+- лучше чем одно поле `status: healthy/unhealthy`
+- легко расширять **новыми conditions**
+
 ^api-conditions
 
 ## Event объекты
 
-```
-Event = отдельный объект в API (не часть другого объекта)
-  → создаётся контроллерами при действиях/проблемах
-  → удаляется через ~1 час (чтобы не нагружать etcd)
-  → два типа: Normal и Warning
+**Event** = отдельный объект в API (не часть другого объекта)
+- создаётся **контроллерами** при действиях/проблемах
+- удаляется через **~1 час** (чтобы не нагружать etcd)
+- два типа: **Normal** и **Warning**
 
-kubectl get events                        → все события
-kubectl get events --field-selector type=Warning  → только проблемы
-kubectl describe <kind> <name>            → события этого объекта
+| Команда                                              | Что делает                 |
+| ---------------------------------------------------- | -------------------------- |
+| `kubectl get events`                                 | все события                |
+| `kubectl get events --field-selector type=Warning`   | только **проблемы**        |
+| `kubectl describe <kind> <name>`                     | события этого объекта      |
 
-Полезно: запускать kubectl get events после каждого изменения
-```
+> **Полезно:** запускать `kubectl get events` после каждого изменения
+
 ^api-events
 
 ## kubectl — полезные команды
 
-```
-kubectl get <kind>                    → список объектов
-kubectl get <kind> <name> -o yaml     → полный YAML манифест
-kubectl get <kind> <name> -o json     → JSON формат
-kubectl describe <kind> <name>        → human-readable + events + related objects
-kubectl explain <kind>                → документация по полям
-kubectl explain pod.spec.containers   → drill down в конкретное поле
-kubectl explain pods --recursive      → полное дерево полей
-kubectl apply -f manifest.yaml        → создать/обновить объект из файла
-kubectl delete -f manifest.yaml       → удалить объект
-```
+| Команда                                  | Что делает                                          |
+| ---------------------------------------- | --------------------------------------------------- |
+| `kubectl get <kind>`                     | список объектов                                     |
+| `kubectl get <kind> <name> -o yaml`      | полный **YAML** манифест                            |
+| `kubectl get <kind> <name> -o json`      | **JSON** формат                                     |
+| `kubectl describe <kind> <name>`         | **human-readable** + events + related objects       |
+| `kubectl explain <kind>`                 | **документация** по полям                           |
+| `kubectl explain pod.spec.containers`    | **drill down** в конкретное поле                    |
+| `kubectl explain pods --recursive`       | полное **дерево полей**                             |
+| `kubectl apply -f manifest.yaml`         | **создать/обновить** объект из файла                |
+| `kubectl delete -f manifest.yaml`        | **удалить** объект                                  |
+
 ^api-kubectl
 
 ## Связь

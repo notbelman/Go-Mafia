@@ -1,23 +1,21 @@
-- **Deployment** = ReplicaSet + автоматическое обновление pod'ов. Обновил pod template → Deployment controller создаёт новый ReplicaSet и переводит pod'ы
+- **Deployment** — основной способ запуска stateless приложений в K8s. Гарантирует что нужное количество Pod'ов всегда запущено (через ReplicaSet внутри) + автоматически обновляет Pod'ы при изменении template (создаёт новый ReplicaSet, переводит Pod'ы) + позволяет откатиться. Pod умер — Deployment пересоздаст. Это главное отличие от голого Pod'а
 - Две встроенные стратегии: **Recreate** (все pod'ы удаляются, потом создаются — downtime) и **RollingUpdate** (постепенная замена — без downtime, default)
 - **maxSurge** = сколько pod'ов СВЕРХ desired можно создать. **maxUnavailable** = сколько pod'ов НИЖЕ desired допустимо. Default: оба 25%
-- **pod-template-hash** — label, добавляемый Deployment controller'ом. Значение = hash от pod template. Каждый новый template → новый ReplicaSet с новым hash
+- **pod-template-hash** — label, добавляемый Deployment controller'ом. Значение = hash от pod template. Каждый новый template → новый ReplicaSet с новым hash. Позволяет Deployment отличать pod'ы разных версий и связывать pod с его ReplicaSet
 - **minReadySeconds** — pod должен быть ready N секунд перед тем как считаться available. Защита от faulty versions: pod не available → rollout не продолжается
 
 ---
 
 ## Deployment vs ReplicaSet
 
-```
-ReplicaSet:                         Deployment:
-  Управляет pod'ами                   Управляет ReplicaSet'ами
-  Template update → ничего            Template update → rolling update
-  Нет rollback                        Rollback через revision history
-  Используй напрямую? → НЕТ          Используй для stateless workloads
+| | **ReplicaSet** | **Deployment** |
+|---|---|---|
+| Управляет | pod'ами | ReplicaSet'ами |
+| Template update | ничего не происходит | **rolling update** |
+| Rollback | нет | через **revision history** |
+| Используй напрямую? | **НЕТ** | да, для **stateless workloads** |
 
-Deployment → ReplicaSet → Pods
-  (ты)        (auto)      (auto)
-```
+> **Цепочка владения:** Deployment → ReplicaSet → Pods — ты управляешь только Deployment, остальное **автоматически**.
 ^dep-vs-rs
 
 ## Manifest
@@ -54,75 +52,70 @@ spec:
 
 ## Recreate Strategy
 
-```
+```yaml
 spec:
   strategy:
     type: Recreate
+```
 
+```
 Timeline:
   v1 v1 v1 ──── все удалены ──── v2 v2 v2
                  ↑ DOWNTIME ↑
-
-1. Deployment controller масштабирует старый RS до 0
-2. Все старые pod'ы удаляются одновременно
-3. Создаётся новый RS с desired replicas
-4. Новые pod'ы стартуют одновременно
-
-Use case: приложение НЕ может работать в двух версиях одновременно
-Минус: downtime (503 Service Temporarily Unavailable)
 ```
+
+#### Порядок действий
+
+1. **Deployment controller** масштабирует старый RS до **0**
+2. Все старые pod'ы **удаляются одновременно**
+3. Создаётся **новый RS** с desired replicas
+4. Новые pod'ы **стартуют одновременно**
+
+- **Use case** — приложение **НЕ может** работать в двух версиях одновременно
+- **Минус** — **downtime** (503 Service Temporarily Unavailable)
 ^dep-recreate
 
 ## RollingUpdate Strategy
 
-```
+```yaml
 spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 0
       maxUnavailable: 1
-
-Timeline (maxSurge=0, maxUnavailable=1):
-  v1 v1 v1    → v1 v1 __   → v1 v1 v2   → v1 __ v2
-              → v1 v2 v2   → __ v2 v2   → v2 v2 v2
-
-  Одновременно максимум 3 pod'а (maxSurge=0)
-  Минимум 2 available (maxUnavailable=1)
-
-Каждый шаг:
-  1. Scale down old RS by 1
-  2. Scale up new RS by 1
-  3. Ждать пока новый pod ready + minReadySeconds
-  4. Повторить
 ```
+
+```
+Timeline (maxSurge=0, maxUnavailable=1):
+  v1 v1 v1  → v1 v1 __  → v1 v1 v2  → v1 __ v2
+            → v1 v2 v2  → __ v2 v2  → v2 v2 v2
+```
+
+- Одновременно максимум **3 pod'а** (maxSurge=0)
+- Минимум **2 available** (maxUnavailable=1)
+
+#### Каждый шаг
+
+1. **Scale down** old RS by 1
+2. **Scale up** new RS by 1
+3. Ждать пока новый pod **ready** + **minReadySeconds**
+4. **Повторить**
 ^dep-rolling
 
 ## maxSurge и maxUnavailable
 
-```
-desired = 3
+**desired = 3**
 
-maxSurge=0, maxUnavailable=1:
-  total ≤ 3, available ≥ 2
-  → медленно, по одному pod'у за раз
+| maxSurge | maxUnavailable | total | available | Поведение |
+|---|---|---|---|---|
+| **0** | **1** | ≤ 3 | ≥ 2 | медленно, по одному pod'у за раз |
+| **1** | **0** | ≤ 4 | ≥ 3 | сначала создать новый, потом удалить старый — **zero downtime guarantee** |
+| **1** | **1** | ≤ 4 | ≥ 2 | быстрее (2 pod'а за раз) |
+| **0** | **0** | — | — | **НЕВАЛИДНО** (невозможно обновить) |
 
-maxSurge=1, maxUnavailable=0:
-  total ≤ 4, available ≥ 3
-  → сначала создать новый, потом удалить старый
-  → zero downtime guarantee
-
-maxSurge=1, maxUnavailable=1:
-  total ≤ 4, available ≥ 2
-  → быстрее (2 pod'а за раз)
-
-maxSurge=0, maxUnavailable=0:
-  ❌ НЕВАЛИДНО (невозможно обновить)
-
-Default: maxSurge=25%, maxUnavailable=25%
-  При 10 replicas: maxSurge=3 (ceil), maxUnavailable=2 (floor)
-  total ≤ 13, available ≥ 8
-```
+> **Default:** maxSurge=**25%**, maxUnavailable=**25%**.
+> При 10 replicas: maxSurge=**3** (ceil), maxUnavailable=**2** (floor) → total ≤ 13, available ≥ 8.
 ^dep-surge-unavailable
 
 ## Как Deployment создаёт ReplicaSets
@@ -141,35 +134,34 @@ Deployment: kiada
 Pod names: kiada-58df67c6f6-4knb6
            ─────┬───────── ──┬──
            RS name           random suffix
-
-pod-template-hash label:
-  → добавляется к RS и pod'ам автоматически
-  → значение = hash от pod template
-  → обеспечивает уникальность RS для каждой версии template
-  → предотвращает "захват" pod'ов старым RS
 ```
+
+#### pod-template-hash label
+
+- **Добавляется** к RS и pod'ам **автоматически**
+- **Значение** = hash от pod template
+- **Обеспечивает уникальность** RS для каждой версии template
+- **Предотвращает "захват"** pod'ов старым RS
 ^dep-replicasets
 
 ## minReadySeconds — защита от faulty versions
 
-```
-minReadySeconds: 60
-  → pod ready → ждём 60 секунд → pod available → rollout продолжается
-  → если pod fails readiness probe за эти 60s → таймер сбрасывается
-  → rollout НЕ продолжается пока pod не станет available
+**minReadySeconds: 60**
 
-Пример:
-  Faulty version: приложение падает через 30s
-  minReadySeconds: 60
-  → pod стартует, ready, но через 30s fails readiness probe
-  → pod никогда не available → rollout застревает
-  → старые pod'ы продолжают обслуживать трафик
-  → ты можешь rollback
+- pod **ready** → ждём **60 секунд** → pod **available** → rollout продолжается
+- если pod **fails readiness probe** за эти 60s → таймер **сбрасывается**
+- rollout **НЕ продолжается** пока pod не станет **available**
 
-Без minReadySeconds:
-  → pod ready → сразу available → rollout продолжается
-  → все pod'ы обновлены → все падают через 30s → полный outage
-```
+#### Пример: faulty version (приложение падает через 30s)
+
+- **minReadySeconds: 60** — pod стартует, ready, но через 30s **fails readiness probe**
+- Pod **никогда не available** → rollout **застревает**
+- Старые pod'ы **продолжают обслуживать** трафик → ты можешь **rollback**
+
+#### Без minReadySeconds
+
+- Pod ready → **сразу available** → rollout продолжается
+- Все pod'ы обновлены → все падают через 30s → **полный outage**
 ^dep-minready
 
 ## Связь
