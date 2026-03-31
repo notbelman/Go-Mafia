@@ -8,27 +8,27 @@
 
 ## Ingress vs LoadBalancer Service
 
-```
-LoadBalancer Service:                 Ingress:
-  Каждый сервис = свой public IP       Один public IP для всех сервисов
-  L4 (TCP/UDP)                         L7 (HTTP/HTTPS)
-  Нет routing по path/host             Routing по Host + path
-  Нет TLS termination                  TLS termination встроен
-  Нет cookie session affinity          Cookie session affinity возможен
-  Нет URL rewriting                    URL rewriting возможен
+| Критерий | **LoadBalancer Service** | **Ingress** |
+|---|---|---|
+| **IP-адреса** | Каждый сервис = свой **public IP** | **Один public IP** для всех сервисов |
+| **Уровень** | **L4** (TCP/UDP) | **L7** (HTTP/HTTPS) |
+| **Routing** | Нет routing по path/host | Routing по **Host + path** |
+| **TLS termination** | Нет | **Встроен** |
+| **Cookie session affinity** | Нет | **Возможен** |
+| **URL rewriting** | Нет | **Возможен** |
 
-→ Для HTTP сервисов Ingress почти всегда лучше
-```
+> Для **HTTP сервисов** Ingress почти всегда лучше
+
 ^ing-vs-lb
 
 ## Как работает
 
-```
-1. Client → DNS lookup (kiada.example.com → Ingress IP)
-2. Client → HTTP request → Ingress proxy (Nginx/Envoy)
-3. Proxy смотрит Host header + path → выбирает backend
-4. Proxy → HTTP request → Pod IP напрямую (не через Service ClusterIP)
+1. **Client** → **DNS lookup** (`kiada.example.com` → Ingress IP)
+2. **Client** → HTTP request → **Ingress proxy** (Nginx/Envoy)
+3. Proxy смотрит **Host header + path** → выбирает **backend**
+4. Proxy → HTTP request → **Pod IP напрямую** (не через Service ClusterIP)
 
+```
         DNS: kiada.example.com → 34.56.78.90
 
         Client ──HTTPS──▶ Ingress Proxy ──HTTP──▶ Pod
@@ -38,24 +38,27 @@ LoadBalancer Service:                 Ingress:
                             /quote → quote service pods
                             /questions → quiz service pods
 ```
+
 ^ing-flow
 
 ## Ingress Controller
 
-```
-Controller = software component (Nginx, Traefik, Ambassador, Contour, GLBC)
+**Controller** = software component (Nginx, Traefik, Ambassador, Contour, GLBC)
 
-  Watches: Ingress, Service, EndpointSlice objects
-  Configures: reverse proxy (Nginx config, Envoy config)
-  Exposes: proxy через LoadBalancer Service (обычно)
+- **Watches:** Ingress, Service, EndpointSlice objects
+- **Configures:** reverse proxy (Nginx config, Envoy config)
+- **Exposes:** proxy через **LoadBalancer Service** (обычно)
 
-Популярные:
-  kubernetes/ingress-nginx  — community Nginx controller
-  Traefik                   — built-in Let's Encrypt
-  Ambassador/Emissary       — Envoy-based
-  Contour                   — Envoy-based
-  Cloud-specific: GLBC (GKE), ALB (AWS), AGIC (Azure)
-```
+#### Популярные контроллеры
+
+| Controller | Описание |
+|---|---|
+| **kubernetes/ingress-nginx** | community Nginx controller |
+| **Traefik** | built-in Let's Encrypt |
+| **Ambassador/Emissary** | Envoy-based |
+| **Contour** | Envoy-based |
+| **GLBC** (GKE), **ALB** (AWS), **AGIC** (Azure) | Cloud-specific |
+
 ^ing-controller
 
 ## Manifest
@@ -104,38 +107,37 @@ spec:
             port:
               name: http
 ```
+
 ^ing-manifest
 
 ## Path Matching
 
-```
-pathType: Exact
-  /foo  → matches /foo
-  /foo  → NOT /foo/ , /foo/bar , /FOO
+#### pathType: Exact
+- `/foo` → matches `/foo`
+- `/foo` → **NOT** `/foo/`, `/foo/bar`, `/FOO`
 
-pathType: Prefix
-  /foo  → matches /foo , /foo/ , /foo/bar
-  /foo  → NOT /foobar (split по / , сравнение по элементам)
-  /     → matches всё
+#### pathType: Prefix
+- `/foo` → matches `/foo`, `/foo/`, `/foo/bar`
+- `/foo` → **NOT** `/foobar` (split по `/`, сравнение **по элементам**)
+- `/` → matches **всё**
 
-pathType: ImplementationSpecific
-  → зависит от controller (например, wildcards в GKE)
+#### pathType: ImplementationSpecific
+- Зависит от controller (например, **wildcards** в GKE)
 
-Приоритет: Exact > Prefix (длинный > короткий)
-```
+> **Приоритет:** Exact > Prefix (длинный > короткий)
+
 ^ing-path-matching
 
 ## Host Matching
 
-```
-kiada.example.com    → exact match
-*.example.com        → matches kiada.example.com, api.example.com
-                     → NOT example.com, foo.bar.example.com
-                     → wildcard покрывает ОДИН элемент DNS
+- `kiada.example.com` → **exact match**
+- `*.example.com` → matches `kiada.example.com`, `api.example.com`
+  - **NOT** `example.com`, `foo.bar.example.com`
+  - **Wildcard** покрывает **ОДИН** элемент DNS
+- **Без host** → match **всех хостов**
 
-Без host → match всех хостов
-Exact host > wildcard
-```
+> **Приоритет:** Exact host > wildcard
+
 ^ing-host-matching
 
 ## TLS
@@ -146,20 +148,23 @@ spec:
   - secretName: tls-example-com       # Secret type: kubernetes.io/tls
     hosts:                             # hosts ДОЛЖНЫ совпадать с сертификатом
     - "*.example.com"
+```
 
-# Secret:
+```bash
+# Создание Secret:
 kubectl create secret tls tls-example-com \
   --cert=server.crt --key=server.key
-
-TLS passthrough (end-to-end encryption):
-  → нестандартная фича, зависит от controller
-  → Nginx: annotation nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-
-TLS termination (стандарт):
-  → proxy терминирует TLS
-  → proxy → pod: plain HTTP
-  → pod'у не нужно знать про HTTPS
 ```
+
+#### TLS passthrough (end-to-end encryption)
+- **Нестандартная** фича, зависит от controller
+- **Nginx:** annotation `nginx.ingress.kubernetes.io/ssl-passthrough: "true"`
+
+#### TLS termination (стандарт)
+- Proxy **терминирует TLS**
+- Proxy → pod: **plain HTTP**
+- Pod'у **не нужно знать** про HTTPS
+
 ^ing-tls
 
 ## IngressClass
@@ -178,13 +183,13 @@ spec:
   #   kind: ...
   #   name: ...
 ```
+
 ^ing-class
 
-```
-kubectl get ingressclasses             # доступные классы
-Ingress без ingressClassName → используется default IngressClass
-Несколько controllers → каждый Ingress указывает свой class
-```
+- `kubectl get ingressclasses` — доступные классы
+- **Ingress без `ingressClassName`** → используется **default IngressClass**
+- **Несколько controllers** → каждый Ingress указывает свой **class**
+
 ^ing-class-usage
 
 ## Дополнительная конфигурация через Annotations
@@ -195,19 +200,19 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/affinity: cookie
     nginx.ingress.kubernetes.io/session-cookie-name: MY_COOKIE
-
-# Другие annotation-фичи (зависят от controller):
-  → URL rewriting
-  → HTTP auth (basic/digest)
-  → Rate limiting
-  → CORS
-  → Redirects
-  → Custom timeouts
-  → Proxy buffer size
-
-→ Стандартный Ingress API минимален
-→ Всё остальное через annotations (Nginx) или custom objects (GKE BackendConfig)
 ```
+
+#### Другие annotation-фичи (зависят от controller)
+- **URL rewriting**
+- **HTTP auth** (basic/digest)
+- **Rate limiting**
+- **CORS**
+- **Redirects**
+- **Custom timeouts**
+- **Proxy buffer size**
+
+> **Стандартный Ingress API минимален** — всё остальное через **annotations** (Nginx) или **custom objects** (GKE BackendConfig)
+
 ^ing-annotations
 
 ## Полезные команды
@@ -222,6 +227,7 @@ curl --resolve kiada.example.com:80:<INGRESS_IP> http://kiada.example.com
 # Или добавить в /etc/hosts:
 # <INGRESS_IP> kiada.example.com api.example.com
 ```
+
 ^ing-commands
 
 ## Связь

@@ -1,5 +1,5 @@
-- **Namespace** — виртуальный кластер внутри физического. Scope для имён объектов. Не даёт изоляцию runtime/network (только именование + RBAC)
-- **Labels** — key-value пары на объектах для идентификации и группировки. Используются selectors для фильтрации. Ключевой механизм K8s (Service→Pod, ReplicaSet→Pod)
+- **Namespace** — группировка объектов по имени, как папка. Два Pod'а с именем "api" в разных namespace — не конфликтуют. Даёт: scope имён, RBAC (права доступа), resource quotas. НЕ даёт: сетевой или runtime изоляции
+- **Labels** — key-value пары на объектах для идентификации и группировки. Используются selectors для фильтрации. Ключевой механизм K8s (Service→Pod, ReplicaSet→Pod, Pod→Node)
 - **Label selectors:** equality-based (`app=kiada`, `rel!=canary`) и set-based (`app in (quiz,quote)`, `!rel`). Комбинируются через запятую (AND)
 - **Annotations** — key-value для метаданных, не для фильтрации. До 256KB, любые символы. Для описаний, контактов, build info, инструментов
 - **nodeSelector** — простой equality-based selector для scheduling pod'а на ноды с определёнными labels. **nodeAffinity** — более мощный set-based вариант
@@ -11,29 +11,30 @@
 ```
 Kubernetes Cluster
 ┌──────────────────────────────────────────────┐
-│  default          kube-system    my-team      │
+│  default          kube-system    my-team     │
 │  ┌──────────┐    ┌──────────┐  ┌──────────┐  │
-│  │ Pod: app  │    │ coredns  │  │ Pod: app  │  │  ← одинаковые имена OK
-│  │ Svc: api  │    │ etcd     │  │ Svc: api  │  │
+│  │ Pod: app │    │ coredns  │  │ Pod: app │  │  ← одинаковые имена OK
+│  │ Svc: api │    │ etcd     │  │ Svc: api │  │
 │  └──────────┘    │ kube-dns │  └──────────┘  │
 │                  └──────────┘                │
 └──────────────────────────────────────────────┘
-
-Имена уникальны ВНУТРИ namespace, не между ними
 ```
+
+> **Имена уникальны ВНУТРИ namespace**, не между ними
+
 ^ns-overview
 
 ### Что namespaced, что нет
 
-```
-Namespaced (большинство):          Cluster-scoped:
-  Pod, Service, Deployment           Node
-  ConfigMap, Secret                  PersistentVolume
-  PersistentVolumeClaim              StorageClass
-  Event, Ingress                     Namespace (сам по себе)
+| **Namespaced** (большинство) | **Cluster-scoped** |
+|---|---|
+| Pod, Service, Deployment | Node |
+| ConfigMap, Secret | PersistentVolume |
+| PersistentVolumeClaim | StorageClass |
+| Event, Ingress | Namespace (сам по себе) |
 
-kubectl api-resources → колонка NAMESPACED
-```
+> `kubectl api-resources` — колонка **NAMESPACED** покажет scope каждого ресурса
+
 ^ns-scoped
 
 ### Работа с namespaces
@@ -50,19 +51,19 @@ kubectl delete ns my-team                   # удалить namespace + ВСЕ 
 
 ### Изоляция (точнее, её отсутствие)
 
-```
-Namespaces НЕ дают:
-  ❌ Runtime изоляцию — pod'ы из разных ns могут быть на одной ноде
-  ❌ Network изоляцию — по умолчанию pod'ы из разных ns могут общаться
-     (нужен NetworkPolicy для ограничения)
-  ❌ Замену разным кластерам для prod/staging/dev
+#### Namespaces НЕ дают
 
-Namespaces ДАЮТ:
-  ✅ Scope имён — одинаковые имена в разных ns
-  ✅ RBAC scope — права пользователей привязаны к namespace
-  ✅ Resource quotas — лимиты CPU/memory на namespace
-  ✅ Организацию — команды работают в своих ns
-```
+- **Runtime изоляцию** — pod'ы из разных ns могут быть на одной ноде
+- **Network изоляцию** — по умолчанию pod'ы из разных ns могут общаться (нужен **NetworkPolicy** для ограничения)
+- **Замену разным кластерам** для prod/staging/dev
+
+#### Namespaces ДАЮТ
+
+- **Scope имён** — одинаковые имена в разных ns
+- **RBAC scope** — права пользователей привязаны к namespace
+- **Resource quotas** — лимиты CPU/memory на namespace
+- **Организацию** — команды работают в своих ns
+
 ^ns-isolation
 
 ## Labels
@@ -92,19 +93,20 @@ kubectl label pod --all suite=kiada-suite   # добавить всем pod'ам
 
 ### Правила синтаксиса
 
-```
-Key:
-  [prefix/]name
-  prefix: DNS subdomain, ≤253 символов (example.com/)
-  name: ≤63 символа, alphanumeric + hyphens/underscores/dots
-  kubernetes.io/ и k8s.io/ — зарезервированы
+#### Key
 
-Value:
-  ≤63 символа
-  alphanumeric + hyphens/underscores/dots
-  НЕТ пробелов, спецсимволов
-  может быть пустым ("")
-```
+- Формат: `[prefix/]name`
+- **prefix** — DNS subdomain, **≤253** символов (например `example.com/`)
+- **name** — **≤63** символа, alphanumeric + hyphens/underscores/dots
+- `kubernetes.io/` и `k8s.io/` — **зарезервированы**
+
+#### Value
+
+- **≤63** символа
+- Alphanumeric + hyphens/underscores/dots
+- **НЕТ** пробелов, спецсимволов
+- Может быть пустым (`""`)
+
 ^lb-syntax
 
 ## Label Selectors
@@ -130,22 +132,23 @@ kubectl delete pods -l rel=canary             # удалить все canary pod
 
 ### Selectors в манифестах (внутри K8s)
 
-```
-Service → выбирает Pod'ы:
-  selector:
-    app: kiada
+#### Service — выбирает Pod'ы
 
-ReplicaSet → владеет Pod'ами:
-  selector:
-    matchLabels:
-      app: kiada
+- `selector:` с **equality-based** matching
+- Пример: `app: kiada`
 
-Pod → выбирает Node:
-  nodeSelector:
-    node-role: front-end
+#### ReplicaSet — владеет Pod'ами
 
-→ Labels + Selectors = как K8s связывает объекты между собой
-```
+- `selector.matchLabels:` определяет принадлежность
+- Пример: `app: kiada`
+
+#### Pod — выбирает Node
+
+- `nodeSelector:` для **scheduling** на конкретные ноды
+- Пример: `node-role: front-end`
+
+> **Labels + Selectors** = как K8s связывает объекты между собой
+
 ^lb-selectors-manifests
 
 ## nodeSelector и nodeAffinity
@@ -197,30 +200,31 @@ metadata:
 ```
 ^an-example
 
-```
-Labels vs Annotations:
+#### Labels vs Annotations
 
-  Labels:                          Annotations:
-  ≤63 символа                      ≤256KB
-  Для идентификации и фильтрации   Для метаданных, описаний
-  Используются selectors           НЕ используются для фильтрации
-  Ограниченный набор символов      Любые символы
+| | **Labels** | **Annotations** |
+|---|---|---|
+| **Размер** | ≤63 символа | ≤256KB |
+| **Назначение** | Идентификация и фильтрация | Метаданные, описания |
+| **Selectors** | Используются | **НЕ** используются для фильтрации |
+| **Символы** | Ограниченный набор | Любые символы |
 
+```bash
 kubectl annotate pod my-pod description="My app"     # добавить
 kubectl annotate pod my-pod description- --overwrite  # изменить
 kubectl annotate pod my-pod description-              # удалить
 ```
+
 ^an-vs-labels
 
 ### Annotations используемые K8s
 
-```
-kubectl.kubernetes.io/last-applied-configuration  — последний applied manifest
-kubernetes.io/change-cause                         — причина rollout
-ingress.kubernetes.io/rewrite-target               — Ingress конфигурация
+- **`kubectl.kubernetes.io/last-applied-configuration`** — последний applied manifest
+- **`kubernetes.io/change-cause`** — причина rollout
+- **`ingress.kubernetes.io/rewrite-target`** — Ingress конфигурация
 
-Паттерн: новые фичи сначала как annotation → потом как поле в API
-```
+> **Паттерн:** новые фичи сначала как annotation, потом как поле в API
+
 ^an-kubernetes
 
 ## Связь

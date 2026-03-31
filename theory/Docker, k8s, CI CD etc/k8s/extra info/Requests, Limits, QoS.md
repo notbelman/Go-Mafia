@@ -1,7 +1,8 @@
 - **requests** = гарантированный минимум ресурсов. Scheduler использует для placement. **limits** = потолок, превышение → throttling (CPU) или OOM kill (memory)
 - **QoS классы:** Guaranteed (requests == limits для всех контейнеров), Burstable (хотя бы один request задан), BestEffort (ничего не задано). При нехватке памяти на ноде — BestEffort убивается первым
 - CPU — compressible: превышение limits → throttling (процесс замедляется, НЕ убивается). Memory — incompressible: превышение limits → OOM kill контейнера
-- Без requests: scheduler не знает сколько ресурсов нужно pod'у → может перегрузить ноду. Без limits: pod может съесть все ресурсы ноды
+- **Без requests**: scheduler не знает сколько ресурсов нужно pod'у → может перегрузить ноду. 
+- **Без limits**: pod может съесть все ресурсы ноды
 
 ---
 
@@ -21,66 +22,69 @@ containers:
 ```
 ^res-manifest
 
-```
-requests:
-  → scheduler использует для выбора ноды (Allocatable - sum(requests) ≥ new request)
-  → контейнер ГАРАНТИРОВАННО получает эти ресурсы
-  → cgroups: cpu.shares (пропорциональное распределение CPU)
+#### requests
+- **Scheduler** использует для выбора ноды (**Allocatable** - sum(requests) ≥ new request)
+- Контейнер **гарантированно** получает эти ресурсы
+- **cgroups:** `cpu.shares` (пропорциональное распределение CPU)
 
-limits:
-  → контейнер НЕ МОЖЕТ использовать больше
-  → cgroups: cpu.cfs_quota_us (hard cap для CPU), memory.limit_in_bytes
-  → превышение CPU → throttling (замедление, НЕ kill)
-  → превышение memory → OOM kill контейнера (exit code 137)
+#### limits
+- Контейнер **не может** использовать больше
+- **cgroups:** `cpu.cfs_quota_us` (hard cap для CPU), `memory.limit_in_bytes`
+- Превышение **CPU** → **throttling** (замедление, **не** kill)
+- Превышение **memory** → **OOM kill** контейнера (exit code 137)
 
-⚠️ requests > limits → ошибка валидации
-⚠️ limits без requests → requests автоматически = limits
-```
+> **requests > limits** → ошибка валидации
+> **limits без requests** → requests автоматически = limits
+
 ^res-how-it-works
 
 ## Единицы измерения
 
-```
-CPU:
-  1    = 1 vCPU / 1 hyperthread
-  100m = 0.1 ядра (m = millicores)
-  250m = 0.25 ядра
+#### CPU
 
-Memory:
-  128Mi  = 128 мебибайт (1 Mi = 1024² bytes)
-  1Gi    = 1 гибибайт
-  128M   = 128 мегабайт (1 M = 1000² bytes) — не путать с Mi!
+| Значение | Описание |
+|----------|----------|
+| **1** | 1 vCPU / 1 hyperthread |
+| **100m** | 0.1 ядра (**m** = millicores) |
+| **250m** | 0.25 ядра |
 
-⚠️ 128Mi ≠ 128M (разница ~5%)
-```
+#### Memory
+
+| Значение | Описание |
+|----------|----------|
+| **128Mi** | 128 мебибайт (1 Mi = 1024² bytes) |
+| **1Gi** | 1 гибибайт |
+| **128M** | 128 мегабайт (1 M = 1000² bytes) — **не путать с Mi!** |
+
+> **128Mi ≠ 128M** (разница ~5%)
+
 ^res-units
 
 ## QoS классы (Quality of Service)
 
-```
-K8s автоматически назначает QoS class каждому pod'у:
+**K8s** автоматически назначает **QoS class** каждому pod'у:
 
-Guaranteed:
-  → ВСЕ контейнеры: requests == limits (и CPU, и memory)
-  → последний на убой при OOM на ноде
-  → пример: databases, critical services
+#### Guaranteed
+- **Все** контейнеры: **requests == limits** (и CPU, и memory)
+- **Последний** на убой при OOM на ноде
+- Пример: **databases**, **critical services**
 
-Burstable:
-  → хотя бы один контейнер имеет requests или limits
-  → requests ≠ limits (или заданы не для всех ресурсов)
-  → средний приоритет при OOM
+#### Burstable
+- Хотя бы один контейнер имеет **requests** или **limits**
+- **requests ≠ limits** (или заданы не для всех ресурсов)
+- **Средний** приоритет при OOM
 
-BestEffort:
-  → НИ ОДИН контейнер не задаёт requests/limits
-  → первый на убой при OOM на ноде
-  → пример: batch jobs, некритичные задачи
+#### BestEffort
+- **Ни один** контейнер не задаёт **requests/limits**
+- **Первый** на убой при OOM на ноде
+- Пример: **batch jobs**, некритичные задачи
 
-Приоритет убийства при OOM:
-  BestEffort → Burstable (по % превышения requests) → Guaranteed
-```
+> **Приоритет убийства при OOM:**
+> BestEffort → Burstable (по % превышения requests) → Guaranteed
+
 ^res-qos
 
-```
+```yaml
 # QoS = Guaranteed:
 resources:
   requests:
@@ -106,23 +110,22 @@ resources:
 
 ## OOM Kill vs CPU Throttling
 
-```
-CPU (compressible resource):
-  → pod использует больше limit → CFS throttling
-  → процесс ЗАМЕДЛЯЕТСЯ но НЕ убивается
-  → метрика: container_cpu_cfs_throttled_periods_total
-  → симптом: высокая latency, медленные ответы
+#### CPU (compressible resource)
+- Pod использует больше **limit** → **CFS throttling**
+- Процесс **замедляется**, но **не убивается**
+- Метрика: `container_cpu_cfs_throttled_periods_total`
+- Симптом: высокая **latency**, медленные ответы
 
-Memory (incompressible resource):
-  → pod использует больше limit → OOM kill
-  → контейнер убивается с exit code 137 (SIGKILL)
-  → pod status: OOMKilled
-  → restartPolicy определяет что дальше
-  → если pod превышает requests но не limits → убьют при давлении на ноде
+#### Memory (incompressible resource)
+- Pod использует больше **limit** → **OOM kill**
+- Контейнер убивается с **exit code 137** (SIGKILL)
+- Pod status: **OOMKilled**
+- **restartPolicy** определяет что дальше
+- Если pod превышает **requests**, но не **limits** → убьют при **давлении на ноде**
 
-⚠️ Java: -Xmx должен быть < memory limit (иначе OOM kill)
-⚠️ Go: GOMEMLIMIT (с Go 1.19) помогает GC оставаться в рамках
-```
+> **Java:** `-Xmx` должен быть < memory limit (иначе OOM kill)
+> **Go:** `GOMEMLIMIT` (с Go 1.19) помогает GC оставаться в рамках
+
 ^res-oom-throttling
 
 ## LimitRange и ResourceQuota
@@ -142,7 +145,9 @@ spec:
       cpu: 100m
       memory: 128Mi
     type: Container
+```
 
+```yaml
 # ResourceQuota — лимит ресурсов на весь namespace:
 apiVersion: v1
 kind: ResourceQuota
@@ -160,19 +165,17 @@ spec:
 
 ## Best Practices
 
-```
-✅ Всегда задавай requests (scheduler нуждается в них)
-✅ Задавай memory limits (защита от OOM всей ноды)
-✅ Для production: requests == limits (QoS Guaranteed)
-✅ Для dev/staging: Burstable ок (экономия ресурсов)
-✅ Используй LimitRange для default'ов в namespace
-✅ Используй ResourceQuota для мультитенантности
+- **Всегда** задавай **requests** (scheduler нуждается в них)
+- Задавай **memory limits** (защита от OOM всей ноды)
+- Для **production**: **requests == limits** (QoS Guaranteed)
+- Для **dev/staging**: **Burstable** ок (экономия ресурсов)
+- Используй **LimitRange** для default'ов в namespace
+- Используй **ResourceQuota** для мультитенантности
 
-❌ Не задавай CPU limits слишком низко → throttling → latency
-   (спорная рекомендация: многие убирают CPU limits совсем)
-❌ Не запускай BestEffort в production
-❌ Не путай Mi и M
-```
+- **Не** задавай **CPU limits** слишком низко → throttling → latency (спорная рекомендация: многие убирают CPU limits совсем)
+- **Не** запускай **BestEffort** в production
+- **Не** путай **Mi** и **M**
+
 ^res-best-practices
 
 ## Связь

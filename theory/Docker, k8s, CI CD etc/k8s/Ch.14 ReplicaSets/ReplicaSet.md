@@ -1,7 +1,7 @@
 - **ReplicaSet** = гарантирует что N pod'ов с нужными labels всегда запущены. Spec: replicas + selector + pod template. Основа Deployment'ов
 - **Reconciliation loop:** controller наблюдает за pod'ами → actual ≠ desired → создаёт/удаляет pod'ы. Работает постоянно, реагирует на любые изменения
-- Pod'ы ReplicaSet'а **fungible** (взаимозаменяемы) — random names, нет порядка. Для stateful → StatefulSet
-- **ownerReferences** — pod'ы принадлежат ReplicaSet'у. Удаление ReplicaSet → garbage collector удаляет pod'ы. `--cascade=orphan` сохраняет pod'ы
+- Pod'ы ReplicaSet'а **взаимозаменяемы** (fungible) — random names, нет порядка. Для stateful → StatefulSet
+- **ownerReferences** (поле в metadata pod'а, указывающее на «владельца») — pod'ы принадлежат ReplicaSet'у. Удаление ReplicaSet → garbage collector удаляет pod'ы. `--cascade=orphan` сохраняет pod'ы
 - Обновление pod template **НЕ обновляет** существующие pod'ы — только новые pod'ы создаются по новому template. Для rolling updates → Deployment
 
 ---
@@ -39,11 +39,11 @@ spec:
 
 ```
                     ┌──────────────────────────┐
-                    │    ReplicaSet Controller  │
+                    │    ReplicaSet Controller │
                     └──────────┬───────────────┘
                                │
               ┌────────────────▼────────────────┐
-              │  Watch: ReplicaSet + Pod objects │
+              │  Watch: ReplicaSet + Pod objects│
               └────────────────┬────────────────┘
                                │
               ┌────────────────▼────────────────┐
@@ -70,16 +70,17 @@ kubectl edit rs kiada                   # изменить replicas вручну
 
 ### Порядок удаления при scale down
 
-```
-1. Pod'ы без назначенной ноды
-2. Pod'ы с phase Unknown
-3. Pod'ы которые не ready
-4. Pod'ы с меньшим deletion cost (annotation controller.kubernetes.io/pod-deletion-cost)
-5. Pod'ы на нодах с большим количеством реплик (выравнивание по нодам)
-6. Pod'ы которые были ready меньше времени
-7. Pod'ы с большим количеством restarts
-8. Pod'ы созданные позже
-```
+| Приоритет | Какие pod'ы удаляются первыми |
+|-----------|-------------------------------|
+| 1 | Pod'ы **без назначенной ноды** |
+| 2 | Pod'ы с **phase Unknown** |
+| 3 | Pod'ы которые **не ready** |
+| 4 | Pod'ы с **меньшим deletion cost** (annotation `controller.kubernetes.io/pod-deletion-cost`) |
+| 5 | Pod'ы на нодах с **большим количеством реплик** (выравнивание по нодам) |
+| 6 | Pod'ы которые были **ready меньше времени** |
+| 7 | Pod'ы с **большим количеством restarts** |
+| 8 | Pod'ы **созданные позже** |
+
 ^rs-deletion-order
 
 ## Pod Ownership
@@ -100,13 +101,12 @@ ownerReferences:
 
 ## Обновление Template
 
-```
-Изменил pod template в RS → существующие pod'ы НЕ обновляются
-  → только НОВЫЕ pod'ы (при scale up или замене) используют новый template
-  → RS "cookie cutter" — меняется форма, но уже вырезанное не меняется
+> [!warning] Изменение **pod template** в RS **НЕ обновляет** существующие pod'ы
 
-Для автоматического обновления → используй Deployment
-```
+- Только **НОВЫЕ pod'ы** (при scale up или замене) используют **новый template**
+- RS — **"cookie cutter"**: меняется форма, но уже вырезанное **не меняется**
+- Для **автоматического обновления** → используй **Deployment**
+
 ^rs-template-update
 
 ## Удаление из RS без удаления pod'а
@@ -122,15 +122,14 @@ kubectl label pod kiada-78j7m rel=debug --overwrite
 
 ## RS НЕ гарантирует healthy pod'ы
 
-```
-RS гарантирует: actual count == desired count
-RS НЕ гарантирует: все pod'ы ready/healthy
+- **RS гарантирует:** actual count == desired count
+- **RS НЕ гарантирует:** все pod'ы **ready/healthy**
 
-Если pod crash-loop'ит или fail'ит readiness probe:
-  → RS НЕ удаляет и НЕ заменяет его
-  → RS считает: pod существует → count совпадает → всё ок
-  → ты должен сам удалить/починить проблемный pod
-```
+> [!important] Если pod **crash-loop'ит** или **fail'ит readiness probe:**
+> - RS **НЕ удаляет** и **НЕ заменяет** его
+> - RS считает: pod существует → count совпадает → **всё ок**
+> - Ты должен сам **удалить/починить** проблемный pod
+
 ^rs-not-healthy
 
 ## Полезные команды

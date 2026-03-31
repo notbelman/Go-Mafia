@@ -2,22 +2,22 @@
 - Объекты: **GatewayClass** (провайдер), **Gateway** (точка входа, listeners), **Route** (HTTPRoute/TLSRoute/TCPRoute/UDPRoute/GRPCRoute → связывает Gateway с Service)
 - Преимущества: разделение ролей (admin → Gateway, dev → Route), cross-namespace sharing, больше route types, стандартизация фич (не через annotations)
 - **HTTPRoute** — routing по host/path/method/headers/query params, traffic splitting (weights), mirroring, header modification, URL rewrite, redirect
-- **TLS:** Terminate (gateway расшифровывает, HTTP к backend) vs Passthrough (TLS до backend, routing только по SNI hostname → TLSRoute)
+- **TLS:** Terminate (gateway расшифровывает, HTTP к backend) vs Passthrough (TLS до backend, routing только по SNI (Server Name Indication) hostname → TLSRoute)
 
 ---
 
 ## Gateway API vs Ingress
 
-```
-                        Ingress              Gateway API
-Routing объект          Ingress              HTTPRoute, TLSRoute, TCPRoute...
-Gateway объект          (встроен в Ingress)  Gateway (отдельный)
-Протоколы               HTTP only            HTTP, TLS, TCP, UDP, gRPC
-Cross-namespace         ❌                    ✅ (Route → Gateway в другом ns)
-Доп. конфигурация       Annotations          Стандартные поля + filters
-Разделение ролей        ❌ (всё в Ingress)   ✅ (admin: Gateway, dev: Route)
-Статус                  Stable               HTTPRoute stable, остальные experimental
-```
+|                        | **Ingress**              | **Gateway API**                              |
+| ---------------------- | ------------------------ | -------------------------------------------- |
+| **Routing объект**     | Ingress                  | HTTPRoute, TLSRoute, TCPRoute...             |
+| **Gateway объект**     | (встроен в Ingress)      | Gateway (отдельный)                          |
+| **Протоколы**          | HTTP only                | HTTP, TLS, TCP, UDP, gRPC                    |
+| **Cross-namespace**    | ❌                        | ✅ (Route → Gateway в другом ns)              |
+| **Доп. конфигурация**  | Annotations              | Стандартные поля + **filters**               |
+| **Разделение ролей**   | ❌ (всё в Ingress)       | ✅ (admin: Gateway, dev: Route)               |
+| **Статус**             | Stable                   | HTTPRoute stable, остальные **experimental** |
+
 ^gw-vs-ingress
 
 ## Архитектура
@@ -39,6 +39,7 @@ Cross-namespace         ❌                    ✅ (Route → Gateway в дру�
               ▼      ▼      ▼
             Pods   Pods   Pods
 ```
+
 ^gw-architecture
 
 ## GatewayClass
@@ -58,6 +59,7 @@ spec:
 
 kubectl get gatewayclasses
 ```
+
 ^gw-class
 
 ## Gateway
@@ -88,6 +90,7 @@ spec:
 # kubectl get gtw
 # При создании Gateway → controller создаёт LoadBalancer Service + proxy Pod
 ```
+
 ^gw-gateway
 
 ## HTTPRoute
@@ -129,21 +132,18 @@ spec:
         add: [{name: X-Gateway, value: "true"}]
         remove: [X-Internal]
 ```
+
 ^gw-httproute
 
 ## HTTPRoute Filters
 
-```
-RequestHeaderModifier    — add/set/remove заголовки запроса
-ResponseHeaderModifier   — add/set/remove заголовки ответа
-URLRewrite               — переписать path (ReplaceFullPath / ReplacePrefixMatch)
-                           и/или hostname
-RequestRedirect          — redirect клиента (scheme, port, path, statusCode)
-                           → backendRefs не нужен
-RequestMirror            — отправить копию запроса на другой backend
-                           → ответ зеркала отбрасывается, клиент получает основной
-ExtensionRef             — implementation-specific filter (custom object)
-```
+- **RequestHeaderModifier** — add/set/remove заголовки **запроса**
+- **ResponseHeaderModifier** — add/set/remove заголовки **ответа**
+- **URLRewrite** — переписать **path** (`ReplaceFullPath` / `ReplacePrefixMatch`) и/или **hostname**
+- **RequestRedirect** — redirect клиента (**scheme**, **port**, **path**, **statusCode**) → `backendRefs` не нужен
+- **RequestMirror** — отправить копию запроса на другой backend → ответ зеркала **отбрасывается**, клиент получает основной
+- **ExtensionRef** — implementation-specific filter (custom object)
+
 ^gw-filters
 
 ## Traffic Splitting и Mirroring
@@ -171,22 +171,24 @@ rules:
         name: canary
         port: 80           # получает копию, ответ отбрасывается
 ```
+
 ^gw-splitting-mirroring
 
 ## TLS
 
-```
-Terminate (gateway расшифровывает):
-  Gateway listener: protocol: HTTPS, tls.mode: Terminate
-  → HTTPRoute для routing (gateway видит HTTP)
-  → gateway → backend: plain HTTP
+#### Terminate (gateway расшифровывает)
 
-Passthrough (gateway прозрачно пропускает):
-  Gateway listener: protocol: TLS, tls.mode: Passthrough
-  → TLSRoute для routing (gateway видит ТОЛЬКО hostname через SNI)
-  → gateway → backend: encrypted TLS (end-to-end)
-  → НЕ может routing по path/headers (всё зашифровано)
-```
+- Gateway listener: `protocol: HTTPS`, `tls.mode: Terminate`
+- **HTTPRoute** для routing (gateway видит HTTP)
+- gateway → backend: **plain HTTP**
+
+#### Passthrough (gateway прозрачно пропускает)
+
+- Gateway listener: `protocol: TLS`, `tls.mode: Passthrough`
+- **TLSRoute** для routing (gateway видит **только hostname** через **SNI**)
+- gateway → backend: **encrypted TLS** (end-to-end)
+- **НЕ может** routing по path/headers (всё зашифровано)
+
 ^gw-tls
 
 ## Другие Route types
@@ -222,49 +224,54 @@ spec:
         type: Exact
     backendRefs: [{name: grpc-svc, port: 9000}]
 ```
+
 ^gw-other-routes
 
 ## Cross-Namespace
 
-```
-Route → Gateway (в другом namespace):
-  Gateway listener: allowedRoutes.namespaces.from: All / Selector
-  Route parentRefs: name + namespace
+#### Route → Gateway (в другом namespace)
 
-Route → Service (в другом namespace):
-  Нужен ReferenceGrant в namespace Service'а:
+- Gateway listener: `allowedRoutes.namespaces.from:` **All** / **Selector**
+- Route `parentRefs`: **name** + **namespace**
 
-  apiVersion: gateway.networking.k8s.io/v1beta1
-  kind: ReferenceGrant
-  metadata:
-    namespace: service-namespace        # в namespace referent'а
-  spec:
-    from:                               # кто может ссылаться
-    - group: gateway.networking.k8s.io
-      kind: HTTPRoute
-      namespace: kiada
-    to:                                 # на что можно ссылаться
-    - group: ''
-      kind: Service
-      name: some-service               # опционально (без name = любой Service)
+#### Route → Service (в другом namespace)
+
+> Нужен **ReferenceGrant** в namespace Service'а
+
+```yaml
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  namespace: service-namespace        # в namespace referent'а
+spec:
+  from:                               # кто может ссылаться
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    namespace: kiada
+  to:                                 # на что можно ссылаться
+  - group: ''
+    kind: Service
+    name: some-service               # опционально (без name = любой Service)
 ```
+
 ^gw-cross-namespace
 
 ## GAMMA (Service Mesh)
 
-```
-Gateway API может управлять не только north/south (внешний → кластер),
-но и east/west (сервис → сервис) трафиком.
+Gateway API может управлять не только **north/south** (внешний → кластер), но и **east/west** (сервис → сервис) трафиком.
 
-HTTPRoute с parentRefs → Service (вместо Gateway):
-  parentRefs:
-  - name: destination-service
-    kind: Service
-    group: core
+**HTTPRoute** с `parentRefs` → **Service** (вместо Gateway):
 
-→ правила применяются к трафику МЕЖДУ сервисами
-→ фундамент для service mesh через Gateway API
+```yaml
+parentRefs:
+- name: destination-service
+  kind: Service
+  group: core
 ```
+
+- Правила применяются к трафику **между сервисами**
+- Фундамент для **service mesh** через Gateway API
+
 ^gw-gamma
 
 ## Связь

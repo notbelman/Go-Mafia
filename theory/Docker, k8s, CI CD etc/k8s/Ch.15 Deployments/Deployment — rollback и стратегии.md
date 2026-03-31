@@ -1,7 +1,7 @@
 - **Rollback:** `kubectl rollout undo` — откатывает pod template к предыдущей ревизии (или конкретной через `--to-revision`). Стратегия обновления соблюдается при откате
 - **Revision history** хранится в старых ReplicaSet'ах. `revisionHistoryLimit` (default 10) определяет сколько RS хранить. `kubectl rollout history` показывает ревизии
 - **Pause/Resume:** `kubectl rollout pause` — останавливает rollout (можно проверить canary pod'ы). `kubectl rollout resume` — продолжает. Pause перед update → batch изменения
-- **Canary:** два Deployment'а (stable + canary) с разным replicas count, один Service с общим selector. Или minReadySeconds + pause
+- **Canary:** два Deployment'а (stable + canary) с разным replicas count, один Service с общим selector. Или single Deployment + minReadySeconds + pause: rollout обновит 1 pod и остановится, можно проверить canary перед продолжением
 - **Blue/Green:** два Deployment'а (blue + green), Service selector переключается между ними. Мгновенный switch трафика
 
 ---
@@ -14,15 +14,14 @@ kubectl rollout undo deployment kiada
 
 # Откатить к конкретной ревизии:
 kubectl rollout undo deployment kiada --to-revision=2
-
-# Rollback = обратный update (соблюдает strategy)
-# RollingUpdate → постепенный откат
-# Recreate → все pod'ы заменяются сразу
-
-# ⚠️ undo откатывает ТОЛЬКО pod template
-# replicas, strategy, minReadySeconds — НЕ откатываются
-# kubectl apply → откатывает ВСЁ включая strategy/replicas
 ```
+
+- **Rollback** = обратный update (соблюдает **strategy**)
+  - **RollingUpdate** → постепенный откат
+  - **Recreate** → все pod'ы заменяются сразу
+
+> ⚠️ `undo` откатывает **ТОЛЬКО pod template**. **replicas**, **strategy**, **minReadySeconds** — **НЕ** откатываются. Используй `kubectl apply` если нужно откатить **ВСЁ** включая strategy/replicas.
+
 ^dep-rollback
 
 ## Revision History
@@ -36,11 +35,12 @@ kubectl rollout history deploy kiada --revision 2
 
 # Лучший способ — list RS с деталями:
 kubectl get rs -o wide -L ver
-# → revision number в annotation: deployment.kubernetes.io/revision
-
-# История хранится в старых ReplicaSet'ах (replicas: 0)
-# revisionHistoryLimit: 10 (default) → max 10 RS хранятся
 ```
+
+- **Revision number** хранится в annotation: `deployment.kubernetes.io/revision`
+- **История** хранится в старых **ReplicaSet'ах** (replicas: 0)
+- **revisionHistoryLimit: 10** (default) → максимум **10 RS** хранятся
+
 ^dep-history
 
 ```
@@ -62,18 +62,14 @@ Rollback to rev.1:
 ```bash
 # Pause rollout (в процессе обновления):
 kubectl rollout pause deployment kiada
-# → rollout останавливается, часть pod'ов old, часть new
-# → можно проверить new pod'ы
 
 # Resume:
 kubectl rollout resume deployment kiada
-
-# Pause ПЕРЕД обновлением:
-kubectl rollout pause deployment kiada
-# → вносим несколько изменений (image, env, labels...)
-kubectl rollout resume deployment kiada
-# → все изменения применяются в одном rollout
 ```
+
+- **Pause в процессе обновления** → rollout останавливается, часть pod'ов **old**, часть **new** → можно проверить **new pod'ы**
+- **Pause перед обновлением** → вносим несколько изменений (**image**, **env**, **labels**...) → `kubectl rollout resume` → все изменения применяются в **одном rollout**
+
 ^dep-pause
 
 ## Отслеживание Rollout
@@ -81,39 +77,50 @@ kubectl rollout resume deployment kiada
 ```bash
 # Статус rollout:
 kubectl rollout status deploy kiada
-# → "successfully rolled out" или ждёт
 
-# Progressing condition:
+# Детали и conditions:
 kubectl describe deploy kiada
-# Conditions:
-#   Progressing  True   NewReplicaSetAvailable
-#   Available    True   MinimumReplicasAvailable
-
-# Если rollout застрял > progressDeadlineSeconds (default 600s):
-#   Progressing  False  ProgressDeadlineExceeded
 
 # Restart pod'ов (без изменения template):
 kubectl rollout restart deployment kiada
-# → pod'ы пересоздаются по текущей strategy
 ```
+
+#### Conditions
+
+| Condition | Status | Reason | Значение |
+|-----------|--------|--------|----------|
+| **Progressing** | True | NewReplicaSetAvailable | Rollout **завершён** |
+| **Available** | True | MinimumReplicasAvailable | Достаточно **ready** pod'ов |
+| **Progressing** | False | ProgressDeadlineExceeded | Rollout **застрял** > **progressDeadlineSeconds** (default **600s**) |
+
+- `kubectl rollout restart` → pod'ы **пересоздаются** по текущей **strategy**
+
 ^dep-rollout-status
 
 ## Deployment Strategies — расширенные
 
-```
-Встроенные в K8s:
-  Recreate         — все pod'ы удаляются, потом создаются (downtime)
-  RollingUpdate    — постепенная замена (default, zero downtime)
+#### Встроенные в K8s
 
-Реализуемые вручную через K8s примитивы:
-  Canary           — два Deployment'а + один Service
-  Blue/Green       — два Deployment'а + Service selector switch
-  A/B Testing      — два Deployment'а + Ingress routing
+| Стратегия | Описание |
+|-----------|----------|
+| **Recreate** | Все pod'ы удаляются, потом создаются (**downtime**) |
+| **RollingUpdate** | Постепенная замена (**default**, **zero downtime**) |
 
-Требуют внешних инструментов:
-  Traffic Shadowing — Ingress/Service Mesh mirroring
-  Advanced Canary   — Flagger, Argo Rollouts
-```
+#### Реализуемые вручную через K8s примитивы
+
+| Стратегия | Описание |
+|-----------|----------|
+| **Canary** | Два Deployment'а + один **Service** |
+| **Blue/Green** | Два Deployment'а + **Service selector switch** |
+| **A/B Testing** | Два Deployment'а + **Ingress routing** |
+
+#### Требуют внешних инструментов
+
+| Стратегия | Описание |
+|-----------|----------|
+| **Traffic Shadowing** | Ingress / **Service Mesh** mirroring |
+| **Advanced Canary** | **Flagger**, **Argo Rollouts** |
+
 ^dep-strategies-overview
 
 ## Canary
@@ -170,24 +177,22 @@ Ingress:
 
 ## ⚠️ Подводные камни
 
-```
-1. replicas в manifest файле:
-   kubectl scale deploy kiada --replicas 5
-   kubectl apply -f deploy.yaml            ← если replicas: 3 в файле → ОТКАТИТ к 3
-   → Совет: не указывай replicas в manifest, скейль через kubectl scale
+#### 1. replicas в manifest файле
 
-2. kubectl apply edit-last-applied deploy kiada
-   → убрать replicas из last-applied-configuration
+- `kubectl scale deploy kiada --replicas 5` → потом `kubectl apply -f deploy.yaml` — если **replicas: 3** в файле → **ОТКАТИТ к 3**
+- **Совет:** не указывай **replicas** в manifest, скейль через `kubectl scale`
+- `kubectl apply edit-last-applied deploy kiada` → убрать **replicas** из **last-applied-configuration**
 
-3. Rolling update + web app:
-   → браузер получает HTML от v1, CSS от v2
-   → может сломать UI
-   → решение: session affinity или Blue/Green
+#### 2. Rolling update + web app
 
-4. Scaling RS напрямую:
-   → Deployment controller откатит replicas обратно
-   → изменяй ТОЛЬКО через Deployment
-```
+- Браузер получает **HTML от v1**, **CSS от v2** → может **сломать UI**
+- **Решение:** **session affinity** или **Blue/Green**
+
+#### 3. Scaling RS напрямую
+
+- **Deployment controller** откатит replicas обратно
+- Изменяй **ТОЛЬКО** через **Deployment**
+
 ^dep-pitfalls
 
 ## Полезные команды
