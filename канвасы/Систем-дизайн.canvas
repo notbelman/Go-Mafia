@@ -9,7 +9,7 @@
 		{"id":"ae3d81eb0c91152b","type":"group","x":-5706,"y":-1920,"width":2800,"height":1380,"color":"4","label":"Кеширование"},
 		{"id":"1bed42c6ed7ee7c7","type":"group","x":-5600,"y":-390,"width":2587,"height":1380,"color":"1","label":"Распределенные системы"},
 		{"id":"036bbe10bbecc60c","type":"group","x":-4488,"y":1600,"width":1475,"height":1360,"label":"Урок 5: Независимые паттрны"},
-		{"id":"2b7bcd2ae9e1f33d","type":"group","x":160,"y":-1080,"width":1195,"height":1440,"color":"3","label":"Прокси и балансировки"},
+		{"id":"2b7bcd2ae9e1f33d","type":"group","x":1280,"y":-1200,"width":1195,"height":1440,"color":"3","label":"Прокси и балансировки"},
 		{"id":"n04","type":"file","file":"theory/Систем-дизайн/1. Основные термины и компоненты/Stateless vs Stateful сервисы.md","x":-1600,"y":-1400,"width":900,"height":260},
 		{"id":"n02","type":"file","file":"theory/Систем-дизайн/1. Основные термины и компоненты/Архитектура бэкенда.md","x":-1650,"y":-2340,"width":1100,"height":350,"color":"1"},
 		{"id":"n01","type":"file","file":"theory/Систем-дизайн/1. Основные термины и компоненты/Архитектуры информационных систем.md","x":-3020,"y":-2340,"width":900,"height":380},
@@ -30,9 +30,6 @@
 		{"id":"n23","type":"file","file":"theory/Систем-дизайн/2. Хранение данных/BASE и блокировки транзакций.md","x":-1285,"y":145,"width":1190,"height":390,"color":"5"},
 		{"id":"n25","type":"file","file":"theory/Систем-дизайн/2. Хранение данных/Объекты баз данных.md","x":-2540,"y":620,"width":900,"height":340},
 		{"id":"n26","type":"file","file":"theory/Систем-дизайн/2. Хранение данных/Альтернативные способы хранения данных.md","x":-1285,"y":645,"width":900,"height":290},
-		{"id":"n09","type":"file","file":"theory/Систем-дизайн/1. Основные термины и компоненты/Балансировка — алгоритмы.md","x":180,"y":-120,"width":1140,"height":400,"color":"3"},
-		{"id":"n07","type":"file","file":"theory/Систем-дизайн/1. Основные термины и компоненты/Проксирование.md","x":210,"y":-1030,"width":1000,"height":320,"color":"3"},
-		{"id":"n08","type":"file","file":"theory/Систем-дизайн/1. Основные термины и компоненты/Балансировка — уровни и DNS.md","x":210,"y":-610,"width":1060,"height":380,"color":"3"},
 		{"id":"n30","type":"file","file":"theory/Систем-дизайн/4. Паттерны и приемы проектирования/Распределённые транзакции.md","x":-5580,"y":170,"width":1200,"height":380,"color":"1"},
 		{"id":"n31","type":"file","file":"theory/Систем-дизайн/4. Паттерны и приемы проектирования/Консенсус и координация.md","x":-5542,"y":670,"width":1125,"height":300,"color":"1"},
 		{"id":"n29","type":"file","file":"theory/Систем-дизайн/4. Паттерны и приемы проектирования/CAP и консистентность.md","x":-5533,"y":-350,"width":1170,"height":400,"color":"1"},
@@ -84,7 +81,13 @@
 		{"id":"1c2c0df0e8b1a57b","type":"file","file":"theory/Систем-дизайн/5. Дизайн популярных систем/taxi-design-detailed-cards/Дизайн такси - Matching Service.md","x":-4907,"y":7160,"width":760,"height":1840},
 		{"id":"ecd15e54aaf4ad21","type":"file","file":"theory/Систем-дизайн/5. Дизайн популярных систем/taxi-design-detailed-cards/Дизайн такси - Notification Service.md","x":-4107,"y":7160,"width":840,"height":2080},
 		{"id":"23c714d0078f04f1","type":"file","file":"theory/Систем-дизайн/5. Дизайн популярных систем/taxi-design-detailed-cards/Дизайн - Яндекс.Такси.md","x":-7587,"y":8880,"width":800,"height":980},
-		{"id":"c83b5dcfc02a7650","type":"file","file":"theory/Систем-дизайн/6. Дизайн популярных систем/Pasted image 20260214170204.png","x":-3227,"y":9280,"width":766,"height":520}
+		{"id":"c83b5dcfc02a7650","type":"file","file":"theory/Систем-дизайн/6. Дизайн популярных систем/Pasted image 20260214170204.png","x":-3227,"y":9280,"width":766,"height":520},
+		{"id":"n09","type":"file","file":"theory/Систем-дизайн/1. Основные термины и компоненты/Балансировка — алгоритмы.md","x":1300,"y":-240,"width":1140,"height":400,"color":"3"},
+		{"id":"n07","type":"file","file":"theory/Систем-дизайн/1. Основные термины и компоненты/Проксирование.md","x":1330,"y":-1150,"width":1000,"height":320,"color":"3"},
+		{"id":"n08","type":"file","file":"theory/Систем-дизайн/1. Основные термины и компоненты/Балансировка — уровни и DNS.md","x":1330,"y":-730,"width":1060,"height":380,"color":"3"},
+		{"id":"c595a499d784e5b6","x":0,"y":-500,"width":1220,"height":840,"type":"file","file":"theory/PostgreSQL AND SQL/Шардирование/Шардирование.md"},
+		{"id":"ec239c5417b9b0b4","x":20,"y":370,"width":1180,"height":840,"type":"file","file":"theory/PostgreSQL AND SQL/Партиционирование/Партиционирование.md"},
+		{"id":"11c93ed60caa2bb5","x":-40,"y":-1100,"width":1260,"height":450,"type":"file","file":"theory/PostgreSQL AND SQL/replication-cards/Репликация.md"}
 	],
 	"edges":[
 		{"id":"e01","fromNode":"n27","fromSide":"bottom","toNode":"n28","toSide":"top","label":"FR/NFR → расчёт RPS, трафик, storage"},
