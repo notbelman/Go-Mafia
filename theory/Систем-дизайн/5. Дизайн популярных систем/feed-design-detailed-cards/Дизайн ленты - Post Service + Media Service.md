@@ -1,3 +1,10 @@
+- Post Service = CRUD постов в PostgreSQL
+- Media Service = загрузка медиа через Staging Bucket → S3
+- Transaction Outbox для событий в Kafka
+- Relation Service хранит связи (друзья)
+
+---
+
 Запись постов и загрузка медиа. Простая часть системы — начинаем с неё.
 ## Базовая входная точка
 

@@ -1,3 +1,11 @@
+- Ride Service = управление активной поездкой после матча (отдельный от Matching, чтобы не перегружать)
+- Координаты водителя берёт из Geo Service (active_driver_position), обновления пассажиру через Notification Service
+- Прикапывание стейта (ride storage in-memory): при падении -- продолжаем поездку с того же места
+- History Service + ClickHouse: append-only данные, OLAP-нагрузка, 100M записей/день
+- Разделение hot/cold: Ride Service -- горячие данные (активная поездка), History -- холодные (завершённые)
+
+---
+
 Ведение активной поездки и сохранение истории.
 
 ## Ride Service: зачем отдельный

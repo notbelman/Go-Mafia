@@ -1,3 +1,11 @@
+- Fan-out on write через Kafka
+- Home feed + user feed в Tarantool (in-memory), дека на 10 постов
+- Celebrity Problem → гибрид push/pull (порог 5-10K)
+- 2 ТБ суммарно in-memory
+- Партиционирование Kafka по user_id
+
+---
+
 Ключевой компонент системы. Здесь живёт вся оптимизация на чтение.
 
 ## Зачем вообще Feed Service
@@ -83,7 +91,7 @@ user_feed:                    home_feed:
 ## Связь
 - [[Fan-out on Write vs Fan-out on Read]] — основа подхода
 - [[Celebrity Problem (проблема знаменитостей)]] — гибрид push/pull
-- [[Transaction Outbox]] — Post Service → Kafka
-- [[Pub,Sub (Publisher-Subscriber)]] — Kafka между сервисами
+- [[Распределённые транзакции#Transaction Outbox|Transaction Outbox]] — Post Service → Kafka
+- [[Архитектурные паттерны#Pub/Sub (Publisher-Subscriber)|Pub/Sub]] — Kafka между сервисами
 - [[Дизайн ленты - расчёт нагрузки|Расчёт нагрузки ленты]] — 5787 RPS чтение → нужен кэш
 - [[Дизайн ленты - Feedback Service (лайки и комменты)|Feedback Service]] — при чтении ленты параллельно достаём лайки/комменты

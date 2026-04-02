@@ -1,3 +1,11 @@
+- Real-time система (ASR) -- не read/write-intensive, а постоянный поток обновлений координат
+- DAU: 100M пассажиров + 5M водителей, availability 99.95%, eventual consistency
+- Два API Gateway (passenger / driver) за общим Load Balancer -- разные приложения, разные права
+- WebSocket для событий ("водитель найден", "подъехал", "в пути", "новый заказ")
+- updatePosition каждые 5 сек, response time на заказ: 1 минута
+
+---
+
 Первый этап — зафиксировать требования. Система с двумя типами пользователей.
 
 ## Функциональные требования
@@ -55,4 +63,4 @@ updatePosition(position) — обновить координаты (each 5 secon
 ## Связь
 - [[ASR (Architecture Significant Requirement)|ASR]] — real-time = ключевое требование
 - [[Расчёт нагрузки такси]] — следующий шаг
-- [[Нефункциональные требования]] — DAU, availability, response time
+- [[Требования#Нефункциональные требования|Нефункциональные требования]] — DAU, availability, response time

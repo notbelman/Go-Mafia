@@ -1,3 +1,11 @@
+- **CQRS:** Uploader (mutable) и Downloader (immutable) — разная нагрузка, независимое масштабирование
+- **Репликация PG:** синхронная — потеря метаданных = не собрать файл из чанков
+- **Шардирование по user_id:** дерево каталогов (parent_file_id) на одном шарде, chunk_per_file тоже
+- **S3:** скейлится без проблем; hot/cold storage (SSD для частых, HDD для редких файлов)
+- **Удаление от обратного:** безопасно при дедупликации, воркер чистит бесхозные чанки
+
+---
+
 Репликация, шардирование, финальная схема.
 
 ## Stateless сервисы
@@ -57,4 +65,4 @@
 - [[Дизайн Google Drive - Download + удаление|Удаление и скачивание Google Drive]] — процесс чтения и очистки
 - [[Chunking (разбиение файлов на чанки)|Chunking]] — фундаментальный паттерн
 - [[Content Addressable Storage]] — фундаментальный паттерн
-- [[CQRS (Command Query Responsibility Segregation)]] — разделение Uploader/Downloader
+- [[Архитектурные паттерны#CQRS (Command Query Responsibility Segregation)|CQRS]] — разделение Uploader/Downloader
