@@ -4,7 +4,7 @@
 		{"id":"71242baa99cab08a","type":"group","x":-7607,"y":7100,"width":6120,"height":2760,"label":"Дизайн яндекс такси"},
 		{"id":"6ee5a340c07318e0","type":"group","x":-847,"y":7060,"width":4800,"height":2870,"label":"Дизайн booking"},
 		{"id":"7c902d19c4c742db","type":"group","x":-767,"y":3580,"width":4600,"height":2340,"label":"Дизайн гугл драйв"},
-		{"id":"ae7a2851e5508805","x":2760,"y":-2760,"width":3820,"height":2390,"color":"5","type":"group","label":"Алекс Сюй: “System Design. Подготовка к сложному интервью”"},
+		{"id":"ae7a2851e5508805","type":"group","x":2760,"y":-2760,"width":3820,"height":2390,"color":"5","label":"Алекс Сюй: “System Design. Подготовка к сложному интервью”"},
 		{"id":"392e31023b232e79","type":"group","x":-2560,"y":1510,"width":4180,"height":1450,"label":"Архитектурные паттрны"},
 		{"id":"8146295f80fa6b66","type":"group","x":-2800,"y":-1080,"width":2725,"height":2080,"color":"5","label":"Базы данных"},
 		{"id":"ae3d81eb0c91152b","type":"group","x":-5706,"y":-1920,"width":2800,"height":1380,"color":"4","label":"Кеширование"},
@@ -45,8 +45,6 @@
 		{"id":"n39","type":"file","file":"theory/Систем-дизайн/4. Паттерны и приемы проектирования/mini-design-cards/Мини-дизайн - рекомендательная система.md","x":-1665,"y":2650,"width":1120,"height":260,"color":"3"},
 		{"id":"n38","type":"file","file":"theory/Систем-дизайн/4. Паттерны и приемы проектирования/Микросервисные паттерны.md","x":460,"y":1570,"width":1140,"height":310},
 		{"id":"n34","type":"file","file":"theory/Систем-дизайн/4. Паттерны и приемы проектирования/Клиент-серверная коммуникация.md","x":-2470,"y":2110,"width":970,"height":410},
-		{"id":"c595a499d784e5b6","type":"file","file":"theory/PostgreSQL AND SQL/Шардирование/Шардирование.md","x":0,"y":-500,"width":1220,"height":840},
-		{"id":"ec239c5417b9b0b4","type":"file","file":"theory/PostgreSQL AND SQL/Партиционирование/Партиционирование.md","x":20,"y":370,"width":1180,"height":840},
 		{"id":"11c93ed60caa2bb5","type":"file","file":"theory/PostgreSQL AND SQL/replication-cards/Репликация.md","x":-40,"y":-1100,"width":1260,"height":450},
 		{"id":"n09","type":"file","file":"theory/Систем-дизайн/1. Основные термины и компоненты/Балансировка — алгоритмы.md","x":1300,"y":-240,"width":1140,"height":400,"color":"3"},
 		{"id":"n07","type":"file","file":"theory/Систем-дизайн/1. Основные термины и компоненты/Проксирование.md","x":1330,"y":-1150,"width":1000,"height":320,"color":"3"},
@@ -100,7 +98,9 @@
 		{"id":"4d2b42616f3de0e1","type":"file","file":"theory/Систем-дизайн/6. Дизайн популярных систем/Дизайн Booking - требования, акторы, API.md","x":-827,"y":7110,"width":760,"height":1540},
 		{"id":"1c2c0df0e8b1a57b","type":"file","file":"theory/Систем-дизайн/5. Дизайн популярных систем/taxi-design-detailed-cards/Дизайн такси - Matching Service.md","x":-4907,"y":7160,"width":760,"height":1840},
 		{"id":"5be83564f0383a0e","type":"file","file":"theory/Систем-дизайн/6. Дизайн популярных систем/Дизайн Booking - расчёт нагрузки и data model.md","x":-67,"y":7110,"width":760,"height":1940},
-		{"id":"ce40bf1d9d319400","type":"file","file":"theory/Систем-дизайн/6. Дизайн популярных систем/Дизайн Booking - отказоустойчивость, масштабирование, сезонность.md","x":3133,"y":7110,"width":800,"height":2800}
+		{"id":"ce40bf1d9d319400","type":"file","file":"theory/Систем-дизайн/6. Дизайн популярных систем/Дизайн Booking - отказоустойчивость, масштабирование, сезонность.md","x":3133,"y":7110,"width":800,"height":2800},
+		{"id":"c595a499d784e5b6","type":"file","file":"theory/PostgreSQL AND SQL/Шардирование/Шардирование.md","x":-20,"y":-580,"width":1220,"height":840},
+		{"id":"ec239c5417b9b0b4","type":"file","file":"theory/PostgreSQL AND SQL/Партиционирование/Партиционирование.md","x":0,"y":300,"width":1180,"height":840}
 	],
 	"edges":[
 		{"id":"e01","fromNode":"n27","fromSide":"bottom","toNode":"n28","toSide":"top","label":"FR/NFR → расчёт RPS, трафик, storage"},
