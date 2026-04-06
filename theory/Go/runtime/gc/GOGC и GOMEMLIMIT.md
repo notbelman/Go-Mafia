@@ -1,13 +1,10 @@
-- **GOGC**: % роста heap до следующего GC (default 100 → next GC = prev × 2). Трейдофф:  GOGC↓ = чаще GC, меньше памяти, больше CPU. GOGC↑ = реже GC, больше памяти, меньше CPU.
-- **GOMEMLIMIT**: soft-лимит на **всю** память, runtime сам уменьшает GOGC. Защита: CPU GC **≤ 50%** при  Если не справляется — позволяет превысить лимит (soft, не hard). Иначе deadlock.
-- **death spiral:** live heap ≈ лимит
-	  → GC постоянно работает
-	  → CPU 100% на GC (но ≤50% с GOMEMLIMIT)
-	  → программа не обрабатывает запросы
-	  → запросы копятся → нужно ещё больше памяти → ...
+- **GOGC=100 (default):** `next GC = live heap × 2`. GOGC↓ = чаще GC, меньше памяти, больше CPU. GOGC↑ = реже GC, больше памяти, меньше CPU. Проблема ручного подбора: значение зависит от нагрузки, вечная подстройка
+- **Ballast-хак:** `make([]byte, 2GB)` → RSS не растёт (ОС lazy alloc: физическая страница только при записи), но GOGC считает heap бо́льшим → реже GC. С появлением GOMEMLIMIT не нужен в 99% случаев
+- **GOMEMLIMIT (Go 1.19):** soft-лимит на **всю** память (heap + runtime metadata). **Не включает:** memory-mapped files, cgo. Runtime динамически крутит GOGC при приближении к лимиту
+- **Защита от death spiral:** CPU GC **≤ 50%**. Если не справляется — позволяет **превысить лимит** (soft, не hard). Иначе deadlock. Контейнеры: `GOMEMLIMIT = container_limit × 0.9`
+- **Death spiral:** live heap ≈ лимит → GC постоянно → CPU 100% на GC (но ≤50%) → запросы не обрабатываются → копятся → ещё больше памяти. Сложно обнаружить: приложение работает, CPU загружен, throughput нулевой
 
 ---
-[[GC Flashcards - gogc_gomemlimit]]
 
 Два способа управления GC: частота (GOGC) и лимит памяти (GOMEMLIMIT).
 
@@ -38,12 +35,10 @@ var ballast = make([]byte, 2<<30)  // 2GB
 
 ^3bfe76
 
-Аллокация большого массива для поднятия порога GC. Работает из-за **lazy allocation** ОС: пока не пишем в память, RSS не растёт (только VSS). С появлением GOMEMLIMIT в 99% случаев не нужен. 
+Аллокация большого массива для поднятия порога GC. Работает из-за **lazy allocation** ОС: пока не пишем в память, RSS не растёт (только VSS). С появлением GOMEMLIMIT в 99% случаев не нужен.
 ^ballast-hack
 
 ## GOMEMLIMIT (Go 1.19) — soft memory limit
-
-**GOMEMLIMIT (Go 1.19) — soft memory limit**
 
 Учитывает **всю** память (heap + runtime metadata), не только кучу. НЕ включает: memory-mapped files, cgo memory. ^gomemlimit-what
 
