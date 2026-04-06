@@ -1,46 +1,42 @@
-- набор метаданных, ассоциированных с запросом или процессом
-- позволяет: отменять работу горутин, ограничивать время выполнения, пробрасывать метаданные (trace ID, user ID)
-- природа матрёшки: отмена родителя → отмена всех детей; отмена ребёнка НЕ влияет на родителя и соседей
+## Context в Go
+
+#### [[Что такое context]]
+Что такое context.Context, зачем нужен, дерево контекстов
+
+#### [[Context ошибки и правила]]
+Правила: не хранить в struct, первый параметр, не nil, не передавать данные
+
+#### [[context Background и TODO]]
+context.Background() vs context.TODO() — когда что использовать
 
 ---
-[[Context Flashcards - context]]
-## Интерфейс
 
-```go
-type Context interface {
-    Done() <-chan struct{}        // закрывается при отмене
-    Err() error                   // nil → Canceled | DeadlineExceeded
-    Deadline() (time.Time, bool)  // дедлайн, если установлен
-    Value(key any) any            // значение по ключу (поиск вверх по дереву)
-}
-```
+### Создание контекстов
 
-Любой тип, реализующий эти 4 метода, является контекстом. Можно написать свой. ^ctx-interface-def
+#### [[context WithCancel]]
+WithCancel — отмена вручную, cancel функция, утечки если не вызвать cancel
 
-## Дерево контекстов
+#### [[context WithTimeout]]
+WithTimeout — автоотмена через duration, deadline под капотом
 
-```
-Background (корень, никогда не отменяется)
-    └── WithCancel (request)
-            ├── WithTimeout (db query, 2s)
-            │       └── WithValue (trace_id)
-            └── WithTimeout (http call, 5s)
-```
+#### [[context WithDeadline]]
+WithDeadline — отмена в конкретный момент времени
 
-Отменяем request → отменяются db query и http call по цепочке. ^ctx-tree-cancel-down
+#### [[context WithValue]]
+WithValue — передача значений, типобезопасные ключи, не для параметров
 
-Отменяем db query → request и http call живут дальше. ^ctx-tree-cancel-isolated
+#### [[context WithoutCancel]]
+WithoutCancel (Go 1.21) — дочерний контекст без наследования отмены
 
-## Назначение context
+#### [[context AfterFunc]]
+context.AfterFunc (Go 1.21) — callback при отмене контекста
 
-Context — набор метаданных, ассоциированных с запросом или процессом. Позволяет отменять работу горутин, ограничивать время выполнения и пробрасывать метаданные (trace ID, user ID). ^ctx-purpose
+---
 
-## Природа матрёшки
+### Паттерны
 
-Отмена родителя → отмена всех детей. Отмена ребёнка НЕ влияет на родителя и соседей. ^ctx-propagation
+#### [[errgroup с контекстами]]
+errgroup.WithContext — группа горутин с общим контекстом и первой ошибкой
 
-## Связь
-- [[context WithCancel]] — ручная отмена
-- [[context WithTimeout]] — автоотмена по времени
-- [[context WithValue]] — передача метаданных
-- [[Context ошибки и правила]] — антипаттерны
+#### [[Оборачивание функций без контекста]]
+Как добавить контекст к функции которая его не принимает

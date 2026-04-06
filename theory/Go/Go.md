@@ -60,9 +60,8 @@
 - [[Почему Mutex.Unlock() лучше не в defer]]
 
 ### [[Unsafe]]
-- [[unsafe.Pointer]]
-- [[uintptr]]
-- [[Sizeof Alignof Offsetof]]
+- [[unsafe.Pointer и uintptr]]
+- [[Sizeof,Alignof,Offsetof]]
 
 ---
 
@@ -87,11 +86,11 @@
 ### [[Каналы]]
 - [[Что это]] / [[Поля структуры hchan]]
 - [[Буферизированные каналы]] / [[Небуферизированные каналы]]
-- [[Deadlock в каналах]] / [[nil-каналы]]
+- [[Deadlock в каналах]] / [[Nil-канал]]
 - [[select]] / [[Паттерны]]
 
 ### [[Sync]]
-- [[sync.Mutex]] / [[sync.RWMutex]] / [[sync - atomic]]
+- [[theory/Go/Sync/sync.Mutex/Структура|sync.Mutex]] / [[sync.RWMutex]] / [[sync - atomic]]
 - [[sync.WaitGroup]] / [[sync.Once]] / [[sync.Pool]] / [[sync.Cond]]
 - [[sync.Map]] / [[Паттерны]]
 
