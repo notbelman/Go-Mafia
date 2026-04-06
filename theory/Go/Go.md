@@ -1,5 +1,6 @@
 ## Быстрая навигация
 
+- [[Версии Go]] — ключевые изменения Go 1.21–1.26 (changelog на русском)
 - [[Structs]] — структуры, embedding, выравнивание, паттерны
 - [[Interfaces]] — iface/eface, type assertion, nil interface
 - [[Функции]] — closures, defer, calling conventions, inlining
@@ -112,7 +113,7 @@ ABA-проблема, Treiber Stack, Michael-Scott Queue, RCU, Актор мод
 
 ### [[Runtime]]
 - **Scheduler**: [[GMP обзор]], [[work_stealing]], [[preemption]], [[netpoller]], [[sysmon]]
-- **GC**: [[Обзор GC]], [[Tri-color marking]], [[Write barrier]], [[GC Pacer]], [[GOGC и GOMEMLIMIT]]
+- **GC**: [[Обзор GC]], [[Tri-color marking]], [[Write barrier]], [[GC Pacer]], [[GOGC и GOMEMLIMIT]], [[Green Tea GC (new)]], [[Green Tea - Vector acceleration (new)]]
 
 ### [[Memory]]
 - **Стек**: [[Стек vs Куча]], [[Stack growth]], [[Стек]]
