@@ -1,8 +1,7 @@
 - P = логический процессор. Абстракция: права и ресурсы для выполнения Go-кода: локальная очередь G (256, lock-free) + mcache + gFree пул
 - GOMAXPROCS = количество P. По умолчанию = NumCPU. Изменение в runtime → **STW**
 - mcache на P, не на M — при syscall M блокируется, а P с mcache отдаётся другому M (не простаивает)
-- контейнеры: `uber-go/automaxprocs` для корректного определения лимита
-- в контейнерах: GOMAXPROCS тянется из хостовой машины, не из лимита контейнера
+- **Go 1.25+:** GOMAXPROCS автоматически читает cgroup CPU bandwidth limit на Linux (= CPU limit в K8s); `uber-go/automaxprocs` больше не нужен
 
 [[GMP Flashcards - processor]]
 
@@ -43,11 +42,20 @@ GOMAXPROCS = количество P = максимальный параллел�
 
 Изменение в runtime вызывает **Stop the World**. Лучше не менять на лету. ^gomaxprocs-stw
 
-**Кейс Яндекса с контейнерами:** Docker-контейнер с лимитом 5-6 ядер, но GOMAXPROCS=32 — тянулся из хостовой виртуалки (24-32 ядра). ^gomaxprocs-container-problem
+**Кейс: GOMAXPROCS в контейнерах**
 
-Лишние потоки → контекст-свитчинг ОС → latency/ресурсы хуже на 10-20%. ^gomaxprocs-container-impact
+> [!warning] Устарело (до Go 1.25)
+> Docker-контейнер с лимитом 5-6 ядер, но GOMAXPROCS=32 — тянулся из хостовой виртуалки (24-32 ядра). Лишние потоки → контекст-свитчинг ОС → latency хуже на 10-20%. Решение: `uber-go/automaxprocs` или хардкод.
 
-Решение: захардкодить GOMAXPROCS или использовать `uber-go/automaxprocs`. ^gomaxprocs-container-fix
+## Container-aware GOMAXPROCS (Go 1.25+)
+
+Go 1.25 автоматически читает `cpu.max` из cgroup v2 (CPU bandwidth limit) на Linux. Не нужен `uber-go/automaxprocs`. ^gomaxprocs-container-go125
+
+**Что читает:** CPU limit (= `resources.limits.cpu` в K8s). **Что НЕ читает:** CPU requests — только hard limit. ^gomaxprocs-container-limit-vs-request
+
+Периодически обновляется если лимит изменился во время работы процесса. ^gomaxprocs-container-dynamic
+
+Отключить: `GODEBUG=containermaxprocs=0` или `GODEBUG=updatemaxprocs=0` (отключает динамическое обновление). ^gomaxprocs-container-disable
 
 ## Связь
 - [[GMP обзор]] — роль P в модели
