@@ -1,3 +1,4 @@
+[[астрал-софт]]
 [[касперский]]
 [[avito|avito]]
 [[cloudru|cloudru]]
