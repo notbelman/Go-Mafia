@@ -2,3 +2,9 @@
 .obsidian
 /private/*
 !/private/README.md
+
+
+
+
+# Ignore Smart Environment folder
+.smart-env
