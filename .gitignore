@@ -1,10 +1,13 @@
+# Игнорим всё на корне кроме backend
+/*
+!/backend/
+!.gitignore
+
+# Внутри backend — private полностью игнорится
+/backend/private/
+
+# Системное
 **/.DS_Store
 .obsidian
-/private/*
-!/private/README.md
-
-
-
-
-# Ignore Smart Environment folder
 .smart-env
+.claude

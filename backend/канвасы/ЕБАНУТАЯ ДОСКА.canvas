@@ -1,0 +1,72 @@
+{
+	"nodes": [
+		{
+			"id": "0d9f9f5c29b03492",
+			"type": "file",
+			"file": "backend/канвасы/PostgreSQL.canvas",
+			"x": 13840,
+			"y": -1472,
+			"width": 400,
+			"height": 400
+		},
+		{
+			"id": "a0d06aed1ce64981",
+			"type": "file",
+			"file": "backend/канвасы/GO.canvas",
+			"x": 14280,
+			"y": -1472,
+			"width": 400,
+			"height": 400
+		},
+		{
+			"id": "d5ba9f122f3cd683",
+			"type": "file",
+			"file": "backend/канвасы/Систем-дизайн.canvas",
+			"x": 14280,
+			"y": -1000,
+			"width": 400,
+			"height": 400
+		},
+		{
+			"id": "773378239bcad5ef",
+			"type": "file",
+			"file": "backend/канвасы/Брокеры.canvas",
+			"x": 13840,
+			"y": -1000,
+			"width": 400,
+			"height": 400
+		},
+		{
+			"id": "c39518ab0990443f",
+			"type": "file",
+			"file": "backend/канвасы/Redis.canvas",
+			"x": 13400,
+			"y": -1472,
+			"width": 400,
+			"height": 400
+		},
+		{
+			"id": "1af6ed86c4d30927",
+			"type": "file",
+			"file": "backend/канвасы/Docker и Kubernetes.canvas",
+			"x": 13400,
+			"y": -1000,
+			"width": 400,
+			"height": 400
+		},
+		{
+			"id": "f35e0d5fbf93a186",
+			"type": "file",
+			"file": "backend/канвасы/Сети и Протоколы.canvas",
+			"x": 12960,
+			"y": -1000,
+			"width": 400,
+			"height": 400
+		}
+	],
+	"edges": [],
+	"metadata": {
+		"version": "1.0-1.0",
+		"frontmatter": {}
+	}
+}
